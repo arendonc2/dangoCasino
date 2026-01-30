@@ -1,5 +1,5 @@
 # dangoCasino
 
-Dango es un casino virtual web que cuenta con dos juegos de mesa clásicos del casino, Blackjack y Ruleta con un sistema de fichas digitales que se pueden adquirir a través de un carrito.
+Dango is a web casino wich has two classic table games: BlackJack and Roulette. It has a coins system wich you can use to buy for playing the games.
 
-El sistema debe resolver un manejo de saldos, control de apuestas, un carrito web y manejar unas reglas claras. Eso exige confiabilidad y mantenibilidad
+The system has to solve the balance management, betting control, web cart and to act in base the games rules. That's why it has to be a reliable and maintainable system
