@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS folders
+__MACOSX/
+
+# Finder
+.DS_Store?
+
+# thumbnails
+._*
+
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# Django
+db.sqlite3
