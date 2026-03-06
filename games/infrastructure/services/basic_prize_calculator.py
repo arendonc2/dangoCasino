@@ -1,6 +1,6 @@
 # infrastructure/services/basic_prize_calculator.py
 
-from domain.services.prize_calculator import PrizeCalculator
+from games.domain.services.prize_calculator import PrizeCalculator
 
 
 class BasicPrizeCalculator(PrizeCalculator):
