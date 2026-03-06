@@ -11,8 +11,35 @@ from ..infrastructure.repositories import (
 )
 from ..models import Player
 
+class LoginView(View):
+    def get(self, request):
+        # Si ya tiene sesión activa, redirigir a ruleta
+        if request.session.get('player_id'):
+            return redirect('play_roulette')
+        return render(request, 'games/login.html')
+
+    def post(self, request):
+        username = request.POST.get('username')
+        
+        try:
+            player = Player.objects.get(username=username)
+            
+            # Guardar sesión
+            request.session['player_id'] = player.id
+            request.session['username'] = player.username
+            
+            return redirect('play_roulette')
+        except Player.DoesNotExist:
+            return render(request, 'games/login.html', {
+                'error': 'Username not found. Please register first.'
+            })
+
+
 class RegisterView(View):
     def get(self, request):
+        # Si ya tiene sesión activa, redirigir a ruleta
+        if request.session.get('player_id'):
+            return redirect('play_roulette')
         return render(request, 'games/register.html')
 
     def post(self, request):
@@ -25,7 +52,19 @@ class RegisterView(View):
             })
 
         player = Player.objects.create(username=username, balance=balance, is_vip=False)
+        
+        # Guardar sesión
+        request.session['player_id'] = player.id
+        request.session['username'] = player.username
+        
         return redirect('play_roulette')
+
+
+class LogoutView(View):
+    def get(self, request):
+        request.session.flush()
+        return redirect('home')
+
 
 class PlaceBetView(View):
     def post(self, request):
@@ -39,22 +78,49 @@ class PlaceBetView(View):
         
         return JsonResponse(result)
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class RouletteView(View):
     def get(self, request):
-        return render(request, 'games/roulette.html')
+        player_id = request.session.get('player_id')
+        
+        if not player_id:
+            return redirect('register')
+        
+        try:
+            player = Player.objects.get(id=player_id)
+            context = {
+                'player': player
+            }
+            return render(request, 'games/roulette.html', context)
+        except Player.DoesNotExist:
+            request.session.flush()
+            return redirect('register')
 
     def post(self, request):
-        user_id = int(request.POST.get('user_id'))
+        player_id = request.session.get('player_id')
+        
+        if not player_id:
+            return redirect('register')
+        
+        try:
+            player = Player.objects.get(id=player_id)
+        except Player.DoesNotExist:
+            request.session.flush()
+            return redirect('register')
+        
         bet_type = request.POST.get('bet_type')
         bet_value = request.POST.get('bet_value')
         amount = float(request.POST.get('amount'))
 
-        # match the service __init__ signature
         service = RouletteService(DjangoRouletteRepository())
-        result = service.play_roulette(user_id, bet_type, bet_value, amount)
+        result = service.play_roulette(player_id, bet_type, bet_value, amount)
 
         if request.META.get('HTTP_ACCEPT', '').startswith('application/json'):
             return JsonResponse(result)
 
-        return render(request, 'games/roulette.html', {'result': result})
+        context = {
+            'result': result,
+            'player': player
+        }
+        return render(request, 'games/roulette.html', context)

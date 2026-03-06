@@ -3,20 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Roulette</title>
+  <title>Login - Dango Casino</title>
 
   <style>
     :root{
       --bg: #0b1220;
       --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.10);
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.70);
       --line: rgba(255,255,255,.14);
       --shadow: 0 20px 60px rgba(0,0,0,.45);
       --radius: 18px;
-      --accent: #22c55e; /* green */
-      --danger: #ef4444; /* red */
+      --accent: #22c55e;
+      --danger: #ef4444;
       --gold: #fbbf24;
       --focus: rgba(34,197,94,.35);
       --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
@@ -24,6 +23,7 @@
 
     *{ box-sizing: border-box; }
     html, body{ height: 100%; }
+
     body{
       margin: 0;
       font-family: var(--font);
@@ -38,7 +38,7 @@
       grid-template-rows: auto 1fr;
     }
 
-    /* NAVBAR (same style language as cards) */
+    /* NAVBAR (same as roulette/register) */
     .nav{
       position: sticky;
       top: 0;
@@ -136,17 +136,17 @@
       white-space: nowrap;
     }
 
-    /* MAIN LAYOUT */
+    /* PAGE */
     .page{
       padding: 28px 18px;
       display: grid;
-      place-items: start center;
+      place-items: center;
     }
 
     .wrap{
       width: min(980px, 100%);
       display: grid;
-      grid-template-columns: 1.1fr .9fr;
+      grid-template-columns: 1.05fr .95fr;
       gap: 22px;
       align-items: start;
     }
@@ -216,25 +216,14 @@
 
     .grid{
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 14px;
     }
 
-    @media (max-width: 520px){
-      .grid{ grid-template-columns: 1fr; }
-    }
+    .field{ display: grid; gap: 7px; }
+    label{ font-size: .9rem; color: var(--muted); }
 
-    .field{
-      display: grid;
-      gap: 7px;
-    }
-
-    label{
-      font-size: .9rem;
-      color: var(--muted);
-    }
-
-    .input, select{
+    .input{
       width: 100%;
       padding: 12px 12px;
       border-radius: 12px;
@@ -244,26 +233,11 @@
       outline: none;
       transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
     }
-
     .input::placeholder{ color: rgba(255,255,255,.45); }
-
-    .input:focus, select:focus{
+    .input:focus{
       border-color: rgba(34,197,94,.45);
       box-shadow: 0 0 0 4px var(--focus);
       background: rgba(255,255,255,.08);
-    }
-
-    select{
-      appearance: none;
-      background-image:
-        linear-gradient(45deg, transparent 50%, rgba(255,255,255,.65) 50%),
-        linear-gradient(135deg, rgba(255,255,255,.65) 50%, transparent 50%);
-      background-position:
-        calc(100% - 18px) calc(50% - 3px),
-        calc(100% - 13px) calc(50% - 3px);
-      background-size: 6px 6px, 6px 6px;
-      background-repeat: no-repeat;
-      padding-right: 34px;
     }
 
     .help{
@@ -293,16 +267,15 @@
       background: rgba(255,255,255,.08);
       color: var(--text);
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 900;
       transition: transform .08s ease, background .15s ease, border-color .15s ease;
       min-width: 180px;
+      text-decoration: none;
     }
-
     .btn:hover{
       background: rgba(255,255,255,.10);
       border-color: rgba(255,255,255,.22);
     }
-
     .btn:active{ transform: translateY(1px); }
 
     .btn-primary{
@@ -311,35 +284,29 @@
       color: #07120b;
       box-shadow: 0 16px 30px rgba(34,197,94,.18);
     }
-
     .btn-primary:hover{
       background: linear-gradient(180deg, rgba(34,197,94,1), rgba(34,197,94,.82));
       border-color: rgba(34,197,94,.7);
     }
-
     .btn svg{ width: 18px; height: 18px; }
 
-    .chips{
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+    .alert{
+      margin: 12px 18px 0;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(239,68,68,.28);
+      background: rgba(239,68,68,.10);
+      color: rgba(255,255,255,.92);
+      line-height: 1.35;
+      font-size: .95rem;
     }
 
-    .chip{
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-      font-size: .85rem;
-      color: rgba(255,255,255,.82);
-    }
-
-    /* Result card */
-    .result{ padding: 18px; }
-
-    .result-grid{
-      display: grid;
-      gap: 12px;
+    /* Right-side info */
+    .info{ padding: 18px; display: grid; gap: 12px; }
+    .info h2{
+      margin: 0;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,.92);
     }
 
     .kv{
@@ -354,29 +321,16 @@
     }
 
     .k{ color: rgba(255,255,255,.70); font-size: .9rem; }
-    .v{ font-weight: 700; letter-spacing: .2px; }
+    .v{ font-weight: 900; letter-spacing: .2px; }
 
-    .pill{
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: .9rem;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      width: fit-content;
-    }
-
-    .pill.win{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.12); }
-    .pill.lose{ border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.12); }
-
-    .pill .dot{
-      width: 10px; height: 10px;
-      border-radius: 999px;
-      background: var(--gold);
-      box-shadow: 0 0 0 3px rgba(251,191,36,.18);
+    .note{
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(251,191,36,.22);
+      background: rgba(251,191,36,.08);
+      color: rgba(255,255,255,.88);
+      line-height: 1.45;
+      font-size: .95rem;
     }
 
     footer{
@@ -389,9 +343,6 @@
 
     a{ color: rgba(34,197,94,.95); text-decoration: none; }
     a:hover{ text-decoration: underline; }
-
-    /* Small tweak: links inside subtitle should match */
-    .subtitle a{ color: rgba(34,197,94,.95); }
   </style>
 </head>
 
@@ -406,13 +357,13 @@
 
       <div class="nav-links">
         <a class="nav-link" href="{% url 'home' %}">Inicio</a>
-        <a class="nav-link primary" href="{% url 'play_roulette' %}">Ruleta</a>
+        <a class="nav-link" href="{% url 'play_roulette' %}">Ruleta</a>
 
         {% if request.session.player_id %}
           <span class="nav-user">{{ request.session.username }}</span>
           <a class="nav-link danger" href="{% url 'logout' %}">Cerrar sesión</a>
         {% else %}
-          <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
+          <a class="nav-link primary" href="{% url 'login' %}">Iniciar sesión</a>
           <a class="nav-link" href="{% url 'register' %}">Registrarse</a>
         {% endif %}
       </div>
@@ -422,125 +373,89 @@
   <div class="page">
     <main class="wrap">
 
-      <!-- Main form card -->
-      <section class="card" aria-label="Roulette game">
+      <!-- Login Card -->
+      <section class="card" aria-label="Login">
         <header class="card-header">
           <div class="title">
-            <h1>Play Roulette</h1>
-            <span class="badge" title="Ready to spin">
+            <h1>🎰 Login</h1>
+            <span class="badge" title="Sign in">
               <span class="badge-dot" aria-hidden="true"></span>
-              Live Table
+              Continue
             </span>
           </div>
-
           <p class="subtitle">
-            {% if player %}
-              Welcome, <strong>{{ player.username }}</strong>! Balance: <strong>${{ player.balance }}</strong>
-              | <a href="{% url 'logout' %}">Cerrar sesión</a>
-            {% else %}
-              Choose your bet type, set the stake, and spin the wheel.
-            {% endif %}
+            Enter your username to continue. This form keeps the same route (no action attribute) and uses CSRF.
           </p>
         </header>
 
-        <form method="post" action="{% url 'play_roulette' %}">
+        {% if error %}
+          <div class="alert" role="alert">
+            <strong>Error:</strong> {{ error }}
+          </div>
+        {% endif %}
+
+        <form method="post">
           {% csrf_token %}
 
           <div class="grid">
             <div class="field">
-              <label for="amount">Amount</label>
-              <input class="input" id="amount" type="number" name="amount" step="0.01" min="0" placeholder="e.g. 10.00" required />
-              <div class="help">Enter the stake amount for this spin.</div>
-            </div>
-
-            <div class="field">
-              <label for="bet_type">Bet type</label>
-              <select id="bet_type" name="bet_type" required>
-                <option value="number">Number</option>
-                <option value="color">Color</option>
-                <option value="odd_even">Odd / Even</option>
-              </select>
-              <div class="help">Select how you want to bet.</div>
-            </div>
-
-            <div class="field">
-              <label for="bet_value">Bet value</label>
-              <input class="input" id="bet_value" type="text" name="bet_value" placeholder="e.g. 7, red, odd" required />
-              <div class="help">Examples: <strong>7</strong>, <strong>red</strong>, <strong>odd</strong>.</div>
+              <label for="username">Username</label>
+              <input class="input" type="text" id="username" name="username" placeholder="Enter your username" required autofocus />
+              <div class="help">Use the exact username you registered with.</div>
             </div>
           </div>
 
           <div class="actions">
             <button class="btn btn-primary" type="submit">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M12 18v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4.93 4.93l2.83 2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M16.24 16.24l2.83 2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M2 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M18 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4.93 19.07l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+                <path d="M10 17l5-5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 12h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M15 4h5v16h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               </svg>
-              Spin
+              Login
             </button>
 
-            <div class="chips" aria-label="Quick tips">
-              <span class="chip">Number: 0–36</span>
-              <span class="chip">Color: red/black</span>
-              <span class="chip">Odd/Even</span>
-            </div>
+            <footer>
+              Don’t have an account? <a href="{% url 'register' %}">Register here</a>
+              &nbsp;•&nbsp;
+              <a href="{% url 'home' %}">← Back to home</a>
+            </footer>
           </div>
-
-          <footer>
-            Tip: Session managed automatically. Your balance updates after each spin.
-          </footer>
         </form>
       </section>
 
-      <!-- Result card -->
-      <aside class="card" aria-label="Roulette result">
+      <!-- Right info card -->
+      <aside class="card" aria-label="Login help">
         <header class="card-header">
           <div class="title">
-            <h1 style="font-size:1.15rem;">Result</h1>
-            {% if result %}
-              {% if result.win %}
-                <span class="pill win"><span class="dot" aria-hidden="true"></span> WIN</span>
-              {% else %}
-                <span class="pill lose"><span class="dot" aria-hidden="true"></span> LOSE</span>
-              {% endif %}
-            {% else %}
-              <span class="pill"><span class="dot" aria-hidden="true"></span> Waiting</span>
-            {% endif %}
+            <h1 style="font-size:1.15rem;">Quick Help</h1>
+            <span class="badge" style="background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14);">
+              <span class="badge-dot" style="background: rgba(251,191,36,.95); box-shadow: 0 0 0 3px rgba(251,191,36,.18);" aria-hidden="true"></span>
+              Tip
+            </span>
           </div>
-          <p class="subtitle">Your last spin outcome will appear here.</p>
+          <p class="subtitle">If you’re stuck, these steps usually solve it.</p>
         </header>
 
-        <div class="result">
-          {% if result %}
-            <div class="result-grid">
-              <div class="kv">
-                <span class="k">Spun number</span>
-                <span class="v">{{ result.spun_number }}</span>
-              </div>
+        <div class="info">
+          <h2>What login does</h2>
+          <div class="kv">
+            <span class="k">Session</span>
+            <span class="v">Creates player_id ✅</span>
+          </div>
+          <div class="kv">
+            <span class="k">Security</span>
+            <span class="v">CSRF ✅</span>
+          </div>
 
-              <div class="kv">
-                <span class="k">Win</span>
-                <span class="v">{% if result.win %}Yes{% else %}No{% endif %}</span>
-              </div>
+          <div class="note">
+            <strong style="color: rgba(255,255,255,.95);">Tip:</strong>
+            If you don’t remember your username, create a new account from the Register page.
+          </div>
 
-              <div class="kv">
-                <span class="k">Payout</span>
-                <span class="v">{{ result.payout }}</span>
-              </div>
-            </div>
-          {% else %}
-            <p style="margin:0; color: rgba(255,255,255,.70); line-height:1.5;">
-              Place a bet and spin to see results.
-              {% if player %} Your session is active as <strong>{{ player.username }}</strong>.{% endif %}
-            </p>
-          {% endif %}
+          <footer>
+            Once logged in, go to Roulette from the navbar and place a bet.
+          </footer>
         </div>
       </aside>
 

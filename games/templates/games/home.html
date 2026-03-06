@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dango Casino</title>
 
-  <!-- Matches the Roulette/Register style (colors, cards, glow, rounded UI) -->
   <style>
     :root{
       --bg: #0b1220;
@@ -16,6 +15,7 @@
       --shadow: 0 20px 60px rgba(0,0,0,.45);
       --radius: 18px;
       --accent: #22c55e;
+      --danger: #ef4444;
       --gold: #fbbf24;
       --focus: rgba(34,197,94,.35);
       --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
@@ -33,9 +33,114 @@
         radial-gradient(900px 600px at 90% 10%, rgba(251,191,36,.15), transparent 55%),
         radial-gradient(900px 600px at 50% 110%, rgba(59,130,246,.14), transparent 55%),
         linear-gradient(180deg, #070b14, var(--bg));
+      min-height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    /* NAVBAR (same as the other pages) */
+    .nav{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(7,11,20,.72);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+    }
+    .brand{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      color: rgba(255,255,255,.92);
+      text-decoration:none;
+      font-weight: 900;
+      letter-spacing:.2px;
+      white-space: nowrap;
+    }
+    .brand-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width: 30px; height: 30px;
+      border-radius: 10px;
+      background: rgba(251,191,36,.14);
+      border: 1px solid rgba(251,191,36,.28);
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+    }
+    .nav-links{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-link{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.88);
+      text-decoration:none;
+      font-weight: 700;
+      font-size: .92rem;
+      transition: background .15s ease, border-color .15s ease, transform .08s ease;
+      white-space: nowrap;
+    }
+    .nav-link:hover{
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.18);
+    }
+    .nav-link:active{ transform: translateY(1px); }
+
+    .nav-link.primary{
+      background: linear-gradient(180deg, rgba(34,197,94,.95), rgba(34,197,94,.75));
+      border-color: rgba(34,197,94,.55);
+      color: #07120b;
+      box-shadow: 0 12px 24px rgba(34,197,94,.18);
+    }
+    .nav-link.primary:hover{
+      background: linear-gradient(180deg, rgba(34,197,94,1), rgba(34,197,94,.82));
+      border-color: rgba(34,197,94,.7);
+    }
+
+    .nav-link.danger{
+      background: rgba(239,68,68,.10);
+      border-color: rgba(239,68,68,.28);
+      color: rgba(255,255,255,.92);
+    }
+    .nav-link.danger:hover{
+      background: rgba(239,68,68,.14);
+      border-color: rgba(239,68,68,.35);
+    }
+
+    .nav-user{
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      color: rgba(255,255,255,.72);
+      font-size: .92rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* HOME LAYOUT */
+    .page{
+      padding: 28px 18px;
       display: grid;
       place-items: center;
-      padding: 28px 18px;
     }
 
     .wrap{
@@ -45,7 +150,6 @@
       gap: 22px;
       align-items: start;
     }
-
     @media (max-width: 920px){
       .wrap{ grid-template-columns: 1fr; }
     }
@@ -103,7 +207,6 @@
       font-size: .85rem;
       white-space: nowrap;
     }
-
     .badge-dot{
       width: 8px; height: 8px;
       border-radius: 999px;
@@ -111,20 +214,7 @@
       box-shadow: 0 0 0 3px rgba(34,197,94,.18);
     }
 
-    .content{
-      padding: 18px;
-    }
-
-    .hero{
-      display: grid;
-      gap: 14px;
-    }
-
-    .hero h2{
-      margin: 0;
-      font-size: 1.05rem;
-      color: rgba(255,255,255,.92);
-    }
+    .content{ padding: 18px; }
 
     .chips{
       display: flex;
@@ -132,7 +222,6 @@
       flex-wrap: wrap;
       margin-top: 2px;
     }
-
     .chip{
       padding: 8px 10px;
       border-radius: 999px;
@@ -148,7 +237,6 @@
       gap: 12px;
       margin-top: 14px;
     }
-
     @media (max-width: 520px){
       .actions{ grid-template-columns: 1fr; }
     }
@@ -165,16 +253,14 @@
       color: var(--text);
       text-decoration: none;
       cursor: pointer;
-      font-weight: 800;
+      font-weight: 900;
       transition: transform .08s ease, background .15s ease, border-color .15s ease;
       min-height: 46px;
     }
-
     .btn:hover{
       background: rgba(255,255,255,.10);
       border-color: rgba(255,255,255,.22);
     }
-
     .btn:active{ transform: translateY(1px); }
 
     .btn-primary{
@@ -183,7 +269,6 @@
       color: #07120b;
       box-shadow: 0 16px 30px rgba(34,197,94,.18);
     }
-
     .btn-primary:hover{
       background: linear-gradient(180deg, rgba(34,197,94,1), rgba(34,197,94,.82));
       border-color: rgba(34,197,94,.7);
@@ -191,12 +276,7 @@
 
     .btn svg{ width: 18px; height: 18px; }
 
-    /* Right side: quick panel */
-    .panel{
-      padding: 18px;
-      display: grid;
-      gap: 12px;
-    }
+    .panel{ padding: 18px; display: grid; gap: 12px; }
 
     .panel h2{
       margin: 0;
@@ -235,44 +315,70 @@
       font-size: .85rem;
       line-height: 1.4;
     }
-
-    a{ color: inherit; }
   </style>
 </head>
 
 <body>
-  <main class="wrap">
+  <!-- NAVBAR (addresses kept exactly as you provided) -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="brand" href="{% url 'home' %}">
+        <span class="brand-badge" aria-hidden="true">🎰</span>
+        Dango Casino
+      </a>
 
-    <!-- Main Hero -->
-    <section class="card" aria-label="Dango Casino Home">
-      <header class="card-header">
-        <div class="title">
-          <h1>🎰 Dango Casino</h1>
-          <span class="badge" title="Project status">
-            <span class="badge-dot" aria-hidden="true"></span>
-            Ready to play
-          </span>
-        </div>
-        <p class="subtitle">
-          Welcome to the best online casino experience. Create a player account to get started, or jump straight into
-          Roulette.
-        </p>
-      </header>
+      <div class="nav-links">
+        <a class="nav-link primary" href="{% url 'home' %}">Inicio</a>
+        <a class="nav-link" href="{% url 'play_roulette' %}">Ruleta</a>
 
-      <div class="content">
-        <div class="hero">
-          <h2>Quick actions</h2>
+        {% if request.session.player_id %}
+          <span class="nav-user">{{ request.session.username }}</span>
+          <a class="nav-link danger" href="{% url 'logout' %}">Cerrar sesión</a>
+        {% else %}
+          <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
+          <a class="nav-link" href="{% url 'register' %}">Registrarse</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
 
+  <div class="page">
+    <main class="wrap">
+
+      <!-- Main Hero -->
+      <section class="card" aria-label="Dango Casino Home">
+        <header class="card-header">
+          <div class="title">
+            <h1>🎰 Dango Casino</h1>
+            <span class="badge" title="Status">
+              <span class="badge-dot" aria-hidden="true"></span>
+              Ready
+            </span>
+          </div>
+          <p class="subtitle">
+            Welcome to the best online casino experience. Create an account, login, and start playing Roulette.
+          </p>
+        </header>
+
+        <div class="content">
           <div class="chips" aria-label="Highlights">
-            <span class="chip">Clean UI</span>
             <span class="chip">Django</span>
+            <span class="chip">Sessions</span>
             <span class="chip">Roulette</span>
-            <span class="chip">Fast testing</span>
+            <span class="chip">Clean UI</span>
           </div>
 
-          <!-- Keep addresses exactly: these are your Django url names -->
-          <div class="actions" aria-label="Navigation buttons">
-            <a class="btn btn-primary" href="{% url 'register' %}">
+          <div class="actions" aria-label="Quick actions">
+            <a class="btn btn-primary" href="{% url 'login' %}">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M10 17l5-5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 12h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M15 4h5v16h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Login
+            </a>
+
+            <a class="btn" href="{% url 'register' %}">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4Z" stroke="currentColor" stroke-width="2"/>
                 <path d="M4 20c1.5-4 6-6 8-6s6.5 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -282,57 +388,68 @@
 
             <a class="btn" href="{% url 'play_roulette' %}">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M12 18v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M2 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M18 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 <circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="2"/>
                 <path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 19v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               </svg>
               Play Roulette
             </a>
+
+            {% if request.session.player_id %}
+              <a class="btn" href="{% url 'logout' %}">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M10 17l5-5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4 12h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M15 4h5v16h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Logout
+              </a>
+            {% endif %}
           </div>
 
           <footer>
-            Tip: Keep <strong>.venv</strong> and <strong>db.sqlite3</strong> local (ignored by Git) and push only code.
+            Tip: Keep your .venv and db.sqlite3 local (ignored by Git) and push only your code changes.
           </footer>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Side Panel -->
-    <aside class="card" aria-label="Project overview">
-      <header class="card-header">
-        <div class="title">
-          <h1 style="font-size:1.15rem;">Game Status</h1>
-          <span class="badge" style="background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14);">
-            <span class="badge-dot" style="background: rgba(251,191,36,.95); box-shadow: 0 0 0 3px rgba(251,191,36,.18);" aria-hidden="true"></span>
-            Beta
-          </span>
-        </div>
-        <p class="subtitle">A quick snapshot of what’s available right now.</p>
-      </header>
+      <!-- Side Panel -->
+      <aside class="card" aria-label="Project overview">
+        <header class="card-header">
+          <div class="title">
+            <h1 style="font-size:1.15rem;">Game Status</h1>
+            <span class="badge" style="background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14);">
+              <span class="badge-dot" style="background: rgba(251,191,36,.95); box-shadow: 0 0 0 3px rgba(251,191,36,.18);" aria-hidden="true"></span>
+              Beta
+            </span>
+          </div>
+          <p class="subtitle">A quick snapshot of what’s available right now.</p>
+        </header>
 
-      <div class="panel">
-        <div class="kv">
-          <span class="k">Available game</span>
-          <span class="v">Roulette</span>
-        </div>
-        <div class="kv">
-          <span class="k">Next games</span>
-          <span class="v">Blackjack / Slots</span>
-        </div>
-        <div class="note">
-          <strong style="color: rgba(255,255,255,.95);">Workshop focus:</strong>
-          Refactor one critical flow (placing a bet + prize calculation) with Clean Architecture.
-        </div>
+        <div class="panel">
+          <div class="kv">
+            <span class="k">Available game</span>
+            <span class="v">Roulette</span>
+          </div>
+          <div class="kv">
+            <span class="k">Authentication</span>
+            <span class="v">
+              {% if request.session.player_id %}Logged in{% else %}Guest{% endif %}
+            </span>
+          </div>
+          <div class="note">
+            <strong style="color: rgba(255,255,255,.95);">Workshop focus:</strong>
+            Refactor one critical flow (placing a bet + prize calculation) with Clean Architecture.
+          </div>
 
-        <footer>
-          You can extend this page later with leaderboard, recent spins, or player balance (from your service layer).
-        </footer>
-      </div>
-    </aside>
+          <footer>
+            Next ideas: show balance, recent spins, or a leaderboard (via your service layer).
+          </footer>
+        </div>
+      </aside>
 
-  </main>
+    </main>
+  </div>
 </body>
 </html>
