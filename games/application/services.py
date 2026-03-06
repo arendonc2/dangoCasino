@@ -3,7 +3,7 @@ from ..infrastructure.factories.prize_calculator_factory import PrizeCalculatorF
 from ..infrastructure.repositories import BetRepository
 
 from ..domain.services.roulette_rules import RouletteRules
-from ..infrastructure.repositories import RouletteRepository
+from ..infrastructure.repositories import RouletteRepository, PlayerRepository
 
 class BetService:
     def __init__(self, bet_repo: BetRepository):
@@ -65,3 +65,30 @@ class RouletteService:
             'payout': payout,
             'new_balance': new_balance
         }
+    
+class AuthService:
+    def __init__(self, player_repo: PlayerRepository):
+        self.player_repo = player_repo
+
+    def register(self, username: str, balance: float):
+        username = (username or "").strip()
+        if not username:
+            raise ValueError("Username requerido.")
+        if self.player_repo.exists_username(username):
+            raise ValueError("Username already exists.")
+        return self.player_repo.create(username=username, balance=float(balance))
+
+    def login(self, username: str):
+        username = (username or "").strip()
+        if not username:
+            raise ValueError("Username requerido.")
+        player = self.player_repo.get_by_username(username)
+        if not player:
+            raise ValueError("Username not found. Please register first.")
+        return player
+
+    def get_player(self, player_id: int):
+        player = self.player_repo.get_by_id(player_id)
+        if not player:
+            raise ValueError("Sesión inválida.")
+        return player

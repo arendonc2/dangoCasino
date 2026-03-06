@@ -1,128 +1,113 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
-from ..application.services import BetService, RouletteService
+from .forms import LoginForm, RegisterForm, RoulettePlayForm
+from ..application.services import BetService, RouletteService, AuthService
 from ..infrastructure.repositories import (
     DjangoBetRepository,
     DjangoRouletteRepository,
+    DjangoPlayerRepository,
 )
-from ..models import Player
 
 class LoginView(View):
     def get(self, request):
-        # Si ya tiene sesión activa, redirigir a ruleta
-        if request.session.get('player_id'):
-            return redirect('play_roulette')
-        return render(request, 'games/login.html')
+        if request.session.get("player_id"):
+            return redirect("play_roulette")
+        return render(request, "games/login.html", {"form": LoginForm()})
 
     def post(self, request):
-        username = request.POST.get('username')
-        
+        form = LoginForm(request.POST)
+        if not form.is_valid():
+            return render(request, "games/login.html", {"form": form})
+
+        auth_service = AuthService(DjangoPlayerRepository())
         try:
-            player = Player.objects.get(username=username)
-            
-            # Guardar sesión
-            request.session['player_id'] = player.id
-            request.session['username'] = player.username
-            
-            return redirect('play_roulette')
-        except Player.DoesNotExist:
-            return render(request, 'games/login.html', {
-                'error': 'Username not found. Please register first.'
-            })
+            player = auth_service.login(form.cleaned_data["username"])
+            request.session["player_id"] = player.id
+            request.session["username"] = player.username
+            return redirect("play_roulette")
+        except ValueError as e:
+            return render(request, "games/login.html", {"form": form, "error": str(e)})
 
 
 class RegisterView(View):
     def get(self, request):
-        # Si ya tiene sesión activa, redirigir a ruleta
-        if request.session.get('player_id'):
-            return redirect('play_roulette')
-        return render(request, 'games/register.html')
+        if request.session.get("player_id"):
+            return redirect("play_roulette")
+        return render(request, "games/register.html", {"form": RegisterForm()})
 
     def post(self, request):
-        username = request.POST.get('username')
-        balance = float(request.POST.get('balance', 1000.0))
+        form = RegisterForm(request.POST)
+        if not form.is_valid():
+            return render(request, "games/register.html", {"form": form})
 
-        if Player.objects.filter(username=username).exists():
-            return render(request, 'games/register.html', {
-                'error': 'Username already exists.'
-            })
-
-        player = Player.objects.create(username=username, balance=balance, is_vip=False)
-        
-        # Guardar sesión
-        request.session['player_id'] = player.id
-        request.session['username'] = player.username
-        
-        return redirect('play_roulette')
+        auth_service = AuthService(DjangoPlayerRepository())
+        try:
+            player = auth_service.register(
+                username=form.cleaned_data["username"],
+                balance=form.cleaned_data["balance"],
+            )
+            request.session["player_id"] = player.id
+            request.session["username"] = player.username
+            return redirect("play_roulette")
+        except ValueError as e:
+            return render(request, "games/register.html", {"form": form, "error": str(e)})
 
 
 class LogoutView(View):
     def get(self, request):
         request.session.flush()
-        return redirect('home')
+        return redirect("home")
 
 
-class PlaceBetView(View):
-    def post(self, request):
-        user_id = int(request.POST.get('user_id'))
-        amount = float(request.POST.get('amount'))
-        game_type = request.POST.get('game_type')
-        user_type = request.POST.get('user_type')
-        
-        service = BetService(DjangoBetRepository())
-        result = service.place_bet_and_calculate_prize(user_id, amount, game_type, user_type)
-        
-        return JsonResponse(result)
-
-
-@method_decorator(csrf_exempt, name='dispatch')
 class RouletteView(View):
     def get(self, request):
-        player_id = request.session.get('player_id')
+        player_id = request.session.get("player_id")
         if not player_id:
-            return redirect('login')  # recomendado: login, no register
+            return redirect("login")
 
+        auth_service = AuthService(DjangoPlayerRepository())
         try:
-            player = Player.objects.get(id=player_id)
-            return render(request, 'games/roulette.html', {'player': player})
-        except Player.DoesNotExist:
+            player = auth_service.get_player(player_id)
+            return render(request, "games/roulette.html", {"player": player, "form": RoulettePlayForm()})
+        except ValueError:
             request.session.flush()
-            return redirect('login')
+            return redirect("login")
 
     def post(self, request):
-        player_id = request.session.get('player_id')
+        player_id = request.session.get("player_id")
         if not player_id:
-            return redirect('login')
+            return redirect("login")
 
+        form = RoulettePlayForm(request.POST)
+        auth_service = AuthService(DjangoPlayerRepository())
+        if not form.is_valid():
+            player = auth_service.get_player(player_id)
+            return render(request, "games/roulette.html", {"player": player, "form": form})
+
+        roulette_service = RouletteService(DjangoRouletteRepository())
         try:
-            bet_type = request.POST.get('bet_type')
-            bet_value = request.POST.get('bet_value')
-            amount = float(request.POST.get('amount'))
+            result = roulette_service.play_roulette(
+                user_id=player_id,
+                bet_type=form.cleaned_data["bet_type"],
+                bet_value=form.cleaned_data["bet_value"],
+                amount=float(form.cleaned_data["amount"]),
+            )
+            player = auth_service.get_player(player_id)  # recarga saldo actualizado
 
-            service = RouletteService(DjangoRouletteRepository())
-            result = service.play_roulette(player_id, bet_type, bet_value, amount)
-
-            # recargar player con balance actualizado
-            player = Player.objects.get(id=player_id)
-
-            if request.META.get('HTTP_ACCEPT', '').startswith('application/json'):
+            if request.META.get("HTTP_ACCEPT", "").startswith("application/json"):
                 return JsonResponse(result)
 
-            return render(request, 'games/roulette.html', {
-                'result': result,
-                'player': player
+            return render(request, "games/roulette.html", {
+                "player": player,
+                "result": result,
+                "form": RoulettePlayForm(),
             })
-
         except ValueError as e:
-            player = Player.objects.get(id=player_id)
-            return render(request, 'games/roulette.html', {
-                'player': player,
-                'error': str(e)
+            player = auth_service.get_player(player_id)
+            return render(request, "games/roulette.html", {
+                "player": player,
+                "form": form,
+                "error": str(e),
             })
-        except Player.DoesNotExist:
-            request.session.flush()
-            return redirect('login')
