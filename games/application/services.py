@@ -34,10 +34,20 @@ class RouletteService:
         self.repo = repo
 
     def play_roulette(self, user_id, bet_type, bet_value, amount):
+        if amount <= 0:
+            raise ValueError("El monto debe ser mayor a 0.")
+
+        current_balance = self.repo.get_player_balance(user_id)
+        if amount > current_balance:
+            raise ValueError("Saldo insuficiente para realizar la apuesta.")
+
         spun_number = RouletteRules.spin_wheel()
         win = RouletteRules.check_win(bet_type, bet_value, spun_number)
         payout = RouletteRules.calculate_payout(bet_type, amount) if win else 0
-        
+
+        new_balance = current_balance - amount + payout
+        self.repo.update_player_balance(user_id, new_balance)
+
         bet_data = {
             'player_id': user_id,
             'bet_type': bet_type,
@@ -48,5 +58,10 @@ class RouletteService:
             'payout': payout
         }
         self.repo.save_roulette_bet(bet_data)
-        
-        return {'spun_number': spun_number, 'win': win, 'payout': payout}
+
+        return {
+            'spun_number': spun_number,
+            'win': win,
+            'payout': payout,
+            'new_balance': new_balance
+        }

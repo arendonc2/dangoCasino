@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from ..domain.entities import Bet
+from django.db.models import F
 
 class BetRepository(ABC):
     @abstractmethod
@@ -25,16 +26,31 @@ class DjangoBetRepository(BetRepository):
 
     def update_balance(self, user_id: int, new_balance: float):
         from ..models import Player
-        player = Player.objects.get(id=user_id)
-        player.balance = new_balance
-        player.save()
+        Player.objects.filter(id=user_id).update(balance=new_balance)
 
 class RouletteRepository(ABC):
     @abstractmethod
     def save_roulette_bet(self, bet_data):
         pass
 
+    @abstractmethod
+    def get_player_balance(self, user_id: int) -> float:
+        pass
+
+    @abstractmethod
+    def update_player_balance(self, user_id: int, new_balance: float):
+        pass
+
+
 class DjangoRouletteRepository(RouletteRepository):
     def save_roulette_bet(self, bet_data):
         from ..models import RouletteBet
         RouletteBet.objects.create(**bet_data)
+
+    def get_player_balance(self, user_id: int) -> float:
+        from ..models import Player
+        return float(Player.objects.get(id=user_id).balance)
+
+    def update_player_balance(self, user_id: int, new_balance: float):
+        from ..models import Player
+        Player.objects.filter(id=user_id).update(balance=new_balance)

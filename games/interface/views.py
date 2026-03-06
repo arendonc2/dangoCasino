@@ -83,44 +83,46 @@ class PlaceBetView(View):
 class RouletteView(View):
     def get(self, request):
         player_id = request.session.get('player_id')
-        
         if not player_id:
-            return redirect('register')
-        
+            return redirect('login')  # recomendado: login, no register
+
         try:
             player = Player.objects.get(id=player_id)
-            context = {
-                'player': player
-            }
-            return render(request, 'games/roulette.html', context)
+            return render(request, 'games/roulette.html', {'player': player})
         except Player.DoesNotExist:
             request.session.flush()
-            return redirect('register')
+            return redirect('login')
 
     def post(self, request):
         player_id = request.session.get('player_id')
-        
         if not player_id:
-            return redirect('register')
-        
+            return redirect('login')
+
         try:
+            bet_type = request.POST.get('bet_type')
+            bet_value = request.POST.get('bet_value')
+            amount = float(request.POST.get('amount'))
+
+            service = RouletteService(DjangoRouletteRepository())
+            result = service.play_roulette(player_id, bet_type, bet_value, amount)
+
+            # recargar player con balance actualizado
             player = Player.objects.get(id=player_id)
+
+            if request.META.get('HTTP_ACCEPT', '').startswith('application/json'):
+                return JsonResponse(result)
+
+            return render(request, 'games/roulette.html', {
+                'result': result,
+                'player': player
+            })
+
+        except ValueError as e:
+            player = Player.objects.get(id=player_id)
+            return render(request, 'games/roulette.html', {
+                'player': player,
+                'error': str(e)
+            })
         except Player.DoesNotExist:
             request.session.flush()
-            return redirect('register')
-        
-        bet_type = request.POST.get('bet_type')
-        bet_value = request.POST.get('bet_value')
-        amount = float(request.POST.get('amount'))
-
-        service = RouletteService(DjangoRouletteRepository())
-        result = service.play_roulette(player_id, bet_type, bet_value, amount)
-
-        if request.META.get('HTTP_ACCEPT', '').startswith('application/json'):
-            return JsonResponse(result)
-
-        context = {
-            'result': result,
-            'player': player
-        }
-        return render(request, 'games/roulette.html', context)
+            return redirect('login')
