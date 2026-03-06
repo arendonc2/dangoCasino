@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dango Casino</title>
+
+  <!-- Matches the Roulette/Register style (colors, cards, glow, rounded UI) -->
+  <style>
+    :root{
+      --bg: #0b1220;
+      --card: rgba(255,255,255,.06);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --line: rgba(255,255,255,.14);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+      --accent: #22c55e;
+      --gold: #fbbf24;
+      --focus: rgba(34,197,94,.35);
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{ height: 100%; }
+
+    body{
+      margin: 0;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% -10%, rgba(34,197,94,.18), transparent 50%),
+        radial-gradient(900px 600px at 90% 10%, rgba(251,191,36,.15), transparent 55%),
+        radial-gradient(900px 600px at 50% 110%, rgba(59,130,246,.14), transparent 55%),
+        linear-gradient(180deg, #070b14, var(--bg));
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+    }
+
+    .wrap{
+      width: min(1040px, 100%);
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    @media (max-width: 920px){
+      .wrap{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .card-header{
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+    }
+
+    .title{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    h1{
+      margin: 0;
+      font-size: 1.55rem;
+      letter-spacing: .2px;
+      line-height: 1.25;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .subtitle{
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: .98rem;
+      line-height: 1.5;
+      max-width: 62ch;
+    }
+
+    .badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(34,197,94,.12);
+      border: 1px solid rgba(34,197,94,.22);
+      color: rgba(255,255,255,.92);
+      font-size: .85rem;
+      white-space: nowrap;
+    }
+
+    .badge-dot{
+      width: 8px; height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(34,197,94,.18);
+    }
+
+    .content{
+      padding: 18px;
+    }
+
+    .hero{
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero h2{
+      margin: 0;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,.92);
+    }
+
+    .chips{
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    .chip{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      font-size: .85rem;
+      color: rgba(255,255,255,.82);
+    }
+
+    .actions{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 520px){
+      .actions{ grid-template-columns: 1fr; }
+    }
+
+    .btn{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform .08s ease, background .15s ease, border-color .15s ease;
+      min-height: 46px;
+    }
+
+    .btn:hover{
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.22);
+    }
+
+    .btn:active{ transform: translateY(1px); }
+
+    .btn-primary{
+      background: linear-gradient(180deg, rgba(34,197,94,.95), rgba(34,197,94,.75));
+      border-color: rgba(34,197,94,.55);
+      color: #07120b;
+      box-shadow: 0 16px 30px rgba(34,197,94,.18);
+    }
+
+    .btn-primary:hover{
+      background: linear-gradient(180deg, rgba(34,197,94,1), rgba(34,197,94,.82));
+      border-color: rgba(34,197,94,.7);
+    }
+
+    .btn svg{ width: 18px; height: 18px; }
+
+    /* Right side: quick panel */
+    .panel{
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .panel h2{
+      margin: 0;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,.92);
+    }
+
+    .kv{
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .k{ color: rgba(255,255,255,.70); font-size: .9rem; }
+    .v{ font-weight: 900; letter-spacing: .2px; }
+
+    .note{
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(251,191,36,.22);
+      background: rgba(251,191,36,.08);
+      color: rgba(255,255,255,.88);
+      line-height: 1.45;
+      font-size: .95rem;
+    }
+
+    footer{
+      margin-top: 14px;
+      padding: 0 4px;
+      color: rgba(255,255,255,.55);
+      font-size: .85rem;
+      line-height: 1.4;
+    }
+
+    a{ color: inherit; }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+
+    <!-- Main Hero -->
+    <section class="card" aria-label="Dango Casino Home">
+      <header class="card-header">
+        <div class="title">
+          <h1>🎰 Dango Casino</h1>
+          <span class="badge" title="Project status">
+            <span class="badge-dot" aria-hidden="true"></span>
+            Ready to play
+          </span>
+        </div>
+        <p class="subtitle">
+          Welcome to the best online casino experience. Create a player account to get started, or jump straight into
+          Roulette.
+        </p>
+      </header>
+
+      <div class="content">
+        <div class="hero">
+          <h2>Quick actions</h2>
+
+          <div class="chips" aria-label="Highlights">
+            <span class="chip">Clean UI</span>
+            <span class="chip">Django</span>
+            <span class="chip">Roulette</span>
+            <span class="chip">Fast testing</span>
+          </div>
+
+          <!-- Keep addresses exactly: these are your Django url names -->
+          <div class="actions" aria-label="Navigation buttons">
+            <a class="btn btn-primary" href="{% url 'register' %}">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M4 20c1.5-4 6-6 8-6s6.5 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Create Account
+            </a>
+
+            <a class="btn" href="{% url 'play_roulette' %}">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 18v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M2 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M18 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Play Roulette
+            </a>
+          </div>
+
+          <footer>
+            Tip: Keep <strong>.venv</strong> and <strong>db.sqlite3</strong> local (ignored by Git) and push only code.
+          </footer>
+        </div>
+      </div>
+    </section>
+
+    <!-- Side Panel -->
+    <aside class="card" aria-label="Project overview">
+      <header class="card-header">
+        <div class="title">
+          <h1 style="font-size:1.15rem;">Game Status</h1>
+          <span class="badge" style="background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14);">
+            <span class="badge-dot" style="background: rgba(251,191,36,.95); box-shadow: 0 0 0 3px rgba(251,191,36,.18);" aria-hidden="true"></span>
+            Beta
+          </span>
+        </div>
+        <p class="subtitle">A quick snapshot of what’s available right now.</p>
+      </header>
+
+      <div class="panel">
+        <div class="kv">
+          <span class="k">Available game</span>
+          <span class="v">Roulette</span>
+        </div>
+        <div class="kv">
+          <span class="k">Next games</span>
+          <span class="v">Blackjack / Slots</span>
+        </div>
+        <div class="note">
+          <strong style="color: rgba(255,255,255,.95);">Workshop focus:</strong>
+          Refactor one critical flow (placing a bet + prize calculation) with Clean Architecture.
+        </div>
+
+        <footer>
+          You can extend this page later with leaderboard, recent spins, or player balance (from your service layer).
+        </footer>
+      </div>
+    </aside>
+
+  </main>
+</body>
+</html>

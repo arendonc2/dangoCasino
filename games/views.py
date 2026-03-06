@@ -1,14 +1,11 @@
 from django.shortcuts import render
+from django.views import View
 from django.views.generic import ListView, DetailView
 from .models import Game
-from django.views import View
-from django.http import JsonResponse
 
 class HomeView(View):
     def get(self, request):
-        return JsonResponse({"status": "Casino API running"})
-    
-# Remove BetCreateView and the import line
+        return render(request, 'games/home.html')
 
 class GameListView(ListView):
     model = Game
