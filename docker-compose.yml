@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  django_web:
+    build: .
+    ports:
+      - "8000:8000"
+
+  flask_game_service:
+    build: ./flask-game-service
+    ports:
+      - "5000:5000"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - django_web
+      - flask_game_service
