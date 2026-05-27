@@ -1,0 +1,117 @@
+<!doctype html>
+{% load i18n %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% trans "System Status" %}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 24px;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+      .wrap {
+        max-width: 920px;
+        margin: 0 auto;
+      }
+      .card {
+        border: 1px solid #334155;
+        background: #111827;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      h1, h2 {
+        margin-top: 0;
+      }
+      a {
+        color: #22c55e;
+      }
+      .pill {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid #334155;
+        background: #1f2937;
+        margin-right: 6px;
+      }
+      .lang {
+        text-align: right;
+        margin-bottom: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="lang">
+        <form action="{% url 'set_language' %}" method="post" style="display:inline-flex; gap:8px;">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ request.get_full_path }}">
+          <select name="language">
+            <option value="es">{% trans "Spanish" %}</option>
+            <option value="en">{% trans "English" %}</option>
+          </select>
+          <button type="submit">{% trans "Change language" %}</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h1>{% trans "System Status" %}</h1>
+        <p>{% trans "This page helps demonstrate the hybrid architecture, health endpoints, fallback behavior, and API readiness." %}</p>
+        <p>
+          <span class="pill">{% trans "Django UI" %}</span>
+          <span class="pill">{% trans "Flask Roulette" %}</span>
+          <span class="pill">{% trans "Nginx Gateway" %}</span>
+          <span class="pill">{% trans "Redis/Celery" %}</span>
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>{% trans "Health Endpoints" %}</h2>
+        <ul>
+          <li><a href="{{ health_django }}">{{ health_django }}</a></li>
+          <li><a href="{{ health_flask }}">{{ health_flask }}</a></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>{% trans "Public API v1" %}</h2>
+        <ul>
+          <li><a href="{{ ally_status_endpoint }}">{{ ally_status_endpoint }}</a></li>
+          <li><a href="{{ currency_rate_endpoint }}">{{ currency_rate_endpoint }}</a></li>
+          <li><a href="{{ player_summary_example }}">{{ player_summary_example }}</a></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>{% trans "Ally Service" %}</h2>
+        <p><strong>{% trans "Source" %}:</strong> {{ ally.source }}</p>
+        <p><strong>{% trans "Status" %}:</strong> {{ ally.status }}</p>
+        <p><strong>{% trans "Message" %}:</strong> {{ ally.message }}</p>
+      </div>
+
+      <div class="card">
+        <h2>{% trans "Currency Adapter" %}</h2>
+        <p>{% trans "Current COP to USD rate (mock/fallback aware):" %} <strong>{{ currency_rate }}</strong></p>
+      </div>
+
+      <div class="card">
+        <h2>{% trans "Strangler Pattern" %}</h2>
+        <p>{% trans "Django keeps the web UI and orchestration while roulette execution is delegated to Flask. If Flask fails, Django fallback preserves user experience." %}</p>
+      </div>
+
+      <div class="card">
+        <h2>{% trans "Celery Status" %}</h2>
+        <p>{% trans "Expected state: celery worker running and processing roulette audit tasks asynchronously." %}</p>
+        <p>{% trans "Demo command:" %} docker compose logs celery_worker</p>
+      </div>
+
+      <p>
+        <a href="{% url 'home' %}">{% trans "Back to Home" %}</a>
+      </p>
+    </div>
+  </body>
+</html>

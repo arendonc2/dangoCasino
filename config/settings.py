@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-enwy&oa*xg+j#$qvcmuu&xo+g&hw^*g8^aer5oqstlmqwih(lr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -109,6 +111,15 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+LANGUAGES = [
+    ("es", "Español"),
+    ("en", "English"),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / "locale",
+]
+
 USE_TZ = True
 
 
@@ -116,3 +127,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+
+# Internal service endpoint used by Django to call the Flask roulette microservice.
+ROULETTE_SERVICE_URL = os.getenv("ROULETTE_SERVICE_URL", "http://localhost:5000")
+
+# Ally service integration.
+ALLY_SERVICE_BASE_URL = os.getenv("ALLY_SERVICE_BASE_URL", "http://ally-service:8000")
+ALLY_SERVICE_MOCK = os.getenv("ALLY_SERVICE_MOCK", "true").lower() == "true"
+
+# External API adapter configuration.
+EXTERNAL_API_BASE_URL = os.getenv("EXTERNAL_API_BASE_URL", "")
+EXTERNAL_API_KEY = os.getenv("EXTERNAL_API_KEY", "")
+EXTERNAL_API_MOCK = os.getenv("EXTERNAL_API_MOCK", "true").lower() == "true"
+
+# Celery + Redis (disabled gracefully if services are not reachable).
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")

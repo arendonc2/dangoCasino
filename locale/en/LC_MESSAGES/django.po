@@ -1,0 +1,507 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-27 17:45+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: games/interface/views.py:37
+msgid "Player not found"
+msgstr ""
+
+#: games/interface/views.py:44
+msgid "Unexpected server error"
+msgstr ""
+
+#: games/interface/views.py:86
+msgid "Currency rate obtained through adapter"
+msgstr ""
+
+#: games/interface/views.py:115
+msgid "Username is required."
+msgstr ""
+
+#: games/interface/views.py:122
+msgid "Starting balance must be a valid number."
+msgstr ""
+
+#: games/interface/views.py:127
+msgid "Starting balance cannot be negative."
+msgstr ""
+
+#: games/interface/views.py:132
+msgid "Username already exists."
+msgstr ""
+
+#: games/interface/views.py:167
+msgid "Invalid input data for roulette play."
+msgstr ""
+
+#: games/interface/views.py:208
+msgid ""
+"The roulette microservice did not respond. The play was processed "
+"temporarily by the monolith."
+msgstr ""
+
+#: games/interface/views.py:226
+msgid ""
+"The audit queue is temporarily unavailable. The play result is still valid."
+msgstr ""
+
+#: games/templates/games/game_detail.html:10
+#: games/templates/games/game_list.html:10 games/templates/games/home.html:270
+#: games/templates/games/register.html:261
+#: games/templates/games/roulette.html:323
+#: games/templates/games/system_status.html:54
+msgid "Spanish"
+msgstr ""
+
+#: games/templates/games/game_detail.html:11
+#: games/templates/games/game_list.html:11 games/templates/games/home.html:271
+#: games/templates/games/register.html:262
+#: games/templates/games/roulette.html:324
+#: games/templates/games/system_status.html:55
+msgid "English"
+msgstr ""
+
+#: games/templates/games/game_detail.html:13
+#: games/templates/games/game_list.html:13 games/templates/games/home.html:273
+#: games/templates/games/register.html:264
+#: games/templates/games/roulette.html:326
+#: games/templates/games/system_status.html:57
+msgid "Change language"
+msgstr ""
+
+#: games/templates/games/game_detail.html:16
+msgid "Back to Games"
+msgstr ""
+
+#: games/templates/games/game_detail.html:18
+#: games/templates/games/game_list.html:17
+msgid "Home"
+msgstr ""
+
+#: games/templates/games/game_list.html:4
+#: games/templates/games/game_list.html:21
+msgid "Games"
+msgstr ""
+
+#: games/templates/games/game_list.html:18 games/templates/games/home.html:333
+#: games/templates/games/system_status.html:7
+#: games/templates/games/system_status.html:62
+msgid "System Status"
+msgstr ""
+
+#: games/templates/games/game_list.html:29
+msgid "No games yet."
+msgstr ""
+
+#: games/templates/games/home.html:7 games/templates/games/home.html:281
+msgid "Dango Casino"
+msgstr ""
+
+#: games/templates/games/home.html:282
+msgid "Project status"
+msgstr ""
+
+#: games/templates/games/home.html:284
+msgid "Ready to play"
+msgstr ""
+
+#: games/templates/games/home.html:288
+msgid ""
+"\n"
+"          Welcome to the best online casino experience. Create a player "
+"account to get started, or jump straight into\n"
+"          Roulette.\n"
+"          "
+msgstr ""
+
+#: games/templates/games/home.html:297
+msgid "Quick actions"
+msgstr ""
+
+#: games/templates/games/home.html:299
+msgid "Highlights"
+msgstr ""
+
+#: games/templates/games/home.html:300
+msgid "Clean UI"
+msgstr ""
+
+#: games/templates/games/home.html:303
+msgid "Fast testing"
+msgstr ""
+
+#: games/templates/games/home.html:313
+msgid "Create Account"
+msgstr ""
+
+#: games/templates/games/home.html:325 games/templates/games/roulette.html:335
+msgid "Play Roulette"
+msgstr ""
+
+#: games/templates/games/home.html:329
+msgid "View Games"
+msgstr ""
+
+#: games/templates/games/home.html:338
+msgid ""
+"\n"
+"            Tip: Keep <strong>.venv</strong> and <strong>db.sqlite3</strong> "
+"local (ignored by Git) and push only code.\n"
+"            "
+msgstr ""
+
+#: games/templates/games/home.html:350
+msgid "Game Status"
+msgstr ""
+
+#: games/templates/games/home.html:353
+msgid "Beta"
+msgstr ""
+
+#: games/templates/games/home.html:356
+msgid "A quick snapshot of what is available right now."
+msgstr ""
+
+#: games/templates/games/home.html:361
+msgid "Available game"
+msgstr ""
+
+#: games/templates/games/home.html:365
+msgid "Next games"
+msgstr ""
+
+#: games/templates/games/home.html:369
+msgid "Architecture"
+msgstr ""
+
+#: games/templates/games/home.html:370
+msgid "Django + Flask + Nginx"
+msgstr ""
+
+#: games/templates/games/home.html:373
+msgid "Workshop focus:"
+msgstr ""
+
+#: games/templates/games/home.html:374
+msgid "Hybrid architecture with Strangler Pattern and resilient fallbacks."
+msgstr ""
+
+#: games/templates/games/home.html:378
+msgid ""
+"Use System Status to demo health checks, API endpoints, and fallback "
+"behavior during sustentation."
+msgstr ""
+
+#: games/templates/games/register.html:7
+#: games/templates/games/register.html:276
+#: games/templates/games/register.html:317
+msgid "Register"
+msgstr ""
+
+#: games/templates/games/register.html:273
+msgid "Create a Player Account"
+msgstr ""
+
+#: games/templates/games/register.html:274
+msgid "New Player"
+msgstr ""
+
+#: games/templates/games/register.html:280
+msgid ""
+"\n"
+"          Create your player profile to start betting. This form posts to "
+"the same route you already use\n"
+"          (<strong>method=\"post\"</strong> with CSRF), without changing any "
+"addresses.\n"
+"          "
+msgstr ""
+
+#: games/templates/games/register.html:289
+msgid "Error:"
+msgstr ""
+
+#: games/templates/games/register.html:299
+msgid "Username"
+msgstr ""
+
+#: games/templates/games/register.html:300
+msgid "e.g. player23"
+msgstr ""
+
+#: games/templates/games/register.html:301
+msgid "Pick something short and memorable."
+msgstr ""
+
+#: games/templates/games/register.html:305
+msgid "Starting Balance"
+msgstr ""
+
+#: games/templates/games/register.html:307
+msgid "Default: 1000.00 - you can adjust for testing."
+msgstr ""
+
+#: games/templates/games/register.html:321
+msgid "After registering, you can play Roulette from your navigation."
+msgstr ""
+
+#: games/templates/games/register.html:331
+msgid "Account Preview"
+msgstr ""
+
+#: games/templates/games/register.html:334
+msgid "Ready"
+msgstr ""
+
+#: games/templates/games/register.html:337
+msgid "What gets created when you submit the form."
+msgstr ""
+
+#: games/templates/games/register.html:341
+msgid "Defaults"
+msgstr ""
+
+#: games/templates/games/register.html:343
+msgid "Starting balance"
+msgstr ""
+
+#: games/templates/games/register.html:347
+msgid "Security"
+msgstr ""
+
+#: games/templates/games/register.html:351
+msgid "Tips"
+msgstr ""
+
+#: games/templates/games/register.html:353
+msgid ""
+"Keep server-side validation in your service layer (Clean Architecture), but "
+"you can add lightweight UX helpers here later."
+msgstr ""
+
+#: games/templates/games/roulette.html:7
+msgid "Roulette"
+msgstr ""
+
+#: games/templates/games/roulette.html:336
+msgid "Ready to spin"
+msgstr ""
+
+#: games/templates/games/roulette.html:338
+msgid "Live Table"
+msgstr ""
+
+#: games/templates/games/roulette.html:342
+msgid "Choose your bet type, set the stake, and spin the wheel."
+msgstr ""
+
+#: games/templates/games/roulette.html:352
+msgid "User ID"
+msgstr ""
+
+#: games/templates/games/roulette.html:354
+msgid "Use the correct user ID from your test users."
+msgstr ""
+
+#: games/templates/games/roulette.html:358
+msgid "Amount"
+msgstr ""
+
+#: games/templates/games/roulette.html:359
+msgid "e.g. 10.00"
+msgstr ""
+
+#: games/templates/games/roulette.html:360
+msgid "Enter the stake amount for this spin."
+msgstr ""
+
+#: games/templates/games/roulette.html:364
+msgid "Bet type"
+msgstr ""
+
+#: games/templates/games/roulette.html:366
+msgid "Number"
+msgstr ""
+
+#: games/templates/games/roulette.html:367
+msgid "Color"
+msgstr ""
+
+#: games/templates/games/roulette.html:368
+msgid "Odd / Even"
+msgstr ""
+
+#: games/templates/games/roulette.html:370
+msgid "Select how you want to bet."
+msgstr ""
+
+#: games/templates/games/roulette.html:374
+msgid "Bet value"
+msgstr ""
+
+#: games/templates/games/roulette.html:375
+msgid "e.g. 7, red, odd"
+msgstr ""
+
+#: games/templates/games/roulette.html:376
+msgid "Examples: 7, red, odd."
+msgstr ""
+
+#: games/templates/games/roulette.html:394
+msgid "Spin"
+msgstr ""
+
+#: games/templates/games/roulette.html:397
+msgid "Quick tips"
+msgstr ""
+
+#: games/templates/games/roulette.html:405
+msgid ""
+"Tip: keep roulette rules on the backend and use UI validation only as "
+"support."
+msgstr ""
+
+#: games/templates/games/roulette.html:414
+msgid "Result"
+msgstr ""
+
+#: games/templates/games/roulette.html:417
+msgid "WIN"
+msgstr ""
+
+#: games/templates/games/roulette.html:419
+msgid "LOSE"
+msgstr ""
+
+#: games/templates/games/roulette.html:422
+msgid "Waiting"
+msgstr ""
+
+#: games/templates/games/roulette.html:425
+msgid "Your last spin outcome will appear here."
+msgstr ""
+
+#: games/templates/games/roulette.html:432
+msgid "Winning number"
+msgstr ""
+
+#: games/templates/games/roulette.html:437
+msgid "Win"
+msgstr ""
+
+#: games/templates/games/roulette.html:439
+msgid "Yes"
+msgstr ""
+
+#: games/templates/games/roulette.html:439
+msgid "No"
+msgstr ""
+
+#: games/templates/games/roulette.html:444
+msgid "Payout"
+msgstr ""
+
+#: games/templates/games/roulette.html:450
+msgid "Processed by"
+msgstr ""
+
+#: games/templates/games/roulette.html:469
+msgid "Place a bet and spin to see results. Your request will be posted to"
+msgstr ""
+
+#: games/templates/games/system_status.html:63
+msgid ""
+"This page helps demonstrate the hybrid architecture, health endpoints, "
+"fallback behavior, and API readiness."
+msgstr ""
+
+#: games/templates/games/system_status.html:65
+msgid "Django UI"
+msgstr ""
+
+#: games/templates/games/system_status.html:66
+msgid "Flask Roulette"
+msgstr ""
+
+#: games/templates/games/system_status.html:67
+msgid "Nginx Gateway"
+msgstr ""
+
+#: games/templates/games/system_status.html:68
+msgid "Redis/Celery"
+msgstr ""
+
+#: games/templates/games/system_status.html:73
+msgid "Health Endpoints"
+msgstr ""
+
+#: games/templates/games/system_status.html:81
+msgid "Public API v1"
+msgstr ""
+
+#: games/templates/games/system_status.html:90
+msgid "Ally Service"
+msgstr ""
+
+#: games/templates/games/system_status.html:91
+msgid "Source"
+msgstr ""
+
+#: games/templates/games/system_status.html:92
+msgid "Status"
+msgstr ""
+
+#: games/templates/games/system_status.html:93
+msgid "Message"
+msgstr ""
+
+#: games/templates/games/system_status.html:97
+msgid "Currency Adapter"
+msgstr ""
+
+#: games/templates/games/system_status.html:98
+msgid "Current COP to USD rate (mock/fallback aware):"
+msgstr ""
+
+#: games/templates/games/system_status.html:102
+msgid "Strangler Pattern"
+msgstr ""
+
+#: games/templates/games/system_status.html:103
+msgid ""
+"Django keeps the web UI and orchestration while roulette execution is "
+"delegated to Flask. If Flask fails, Django fallback preserves user "
+"experience."
+msgstr ""
+
+#: games/templates/games/system_status.html:107
+msgid "Celery Status"
+msgstr ""
+
+#: games/templates/games/system_status.html:108
+msgid ""
+"Expected state: celery worker running and processing roulette audit tasks "
+"asynchronously."
+msgstr ""
+
+#: games/templates/games/system_status.html:109
+msgid "Demo command:"
+msgstr ""
+
+#: games/templates/games/system_status.html:113
+msgid "Back to Home"
+msgstr ""

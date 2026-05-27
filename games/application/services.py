@@ -1,6 +1,7 @@
 from ..domain.builders.bet_builder import BetBuilder
 from ..infrastructure.factories.prize_calculator_factory import PrizeCalculatorFactory
 from ..infrastructure.repositories import BetRepository
+from .ports.currency_rate_port import CurrencyRatePort
 
 from ..domain.services.roulette_rules import RouletteRules
 from ..infrastructure.repositories import RouletteRepository
@@ -50,3 +51,11 @@ class RouletteService:
         self.repo.save_roulette_bet(bet_data)
         
         return {'spun_number': spun_number, 'win': win, 'payout': payout}
+
+
+class CurrencyRateService:
+    def __init__(self, port: CurrencyRatePort):
+        self.port = port
+
+    def get_cop_to_usd_rate(self):
+        return self.port.get_cop_to_usd_rate()

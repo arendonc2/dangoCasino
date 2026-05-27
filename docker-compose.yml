@@ -1,22 +1,66 @@
-version: '3'
-
 services:
   django_web:
-    build: .
-    ports:
-      - "8000:8000"
+    build:
+      context: .
+      dockerfile: Dockerfile.django
+    container_name: django_web
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - ROULETTE_SERVICE_URL=http://flask_roulette:5000
+      - ALLY_SERVICE_BASE_URL=http://ally-service:8000
+      - ALLY_SERVICE_MOCK=true
+      - EXTERNAL_API_BASE_URL=
+      - EXTERNAL_API_KEY=
+      - EXTERNAL_API_MOCK=true
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+    expose:
+      - "8000"
 
-  flask_game_service:
-    build: ./flask-game-service
-    ports:
-      - "5000:5000"
+  flask_roulette:
+    build:
+      context: ./flask-game-service
+      dockerfile: Dockerfile
+    container_name: flask_roulette
+    expose:
+      - "5000"
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    expose:
+      - "6379"
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.django
+    container_name: celery_worker
+    command: celery -A config worker --loglevel=info
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - ALLY_SERVICE_BASE_URL=http://ally-service:8000
+      - ALLY_SERVICE_MOCK=true
+      - EXTERNAL_API_BASE_URL=
+      - EXTERNAL_API_KEY=
+      - EXTERNAL_API_MOCK=true
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+    depends_on:
+      - redis
 
   nginx:
     image: nginx:latest
+    container_name: nginx
     ports:
       - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - django_web
-      - flask_game_service
+      - flask_roulette
+
+# Future step (disabled for now): add postgres service and switch DATABASES from SQLite.

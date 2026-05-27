@@ -8,7 +8,7 @@ class RouletteRules:
 
     @staticmethod
     def spin_wheel():
-        return random.randint(1, 36)           # no zero
+        return random.randint(0, 36)
 
     @staticmethod
     def check_win(bet_type, bet_value, spun_number):
@@ -22,9 +22,9 @@ class RouletteRules:
             if bet_value == 'green' and spun_number == 0:
                 return True
         elif bet_type == 'odd_even':
-            if bet_value == 'odd' and spun_number % 2 == 1:
+            if bet_value == 'odd' and spun_number != 0 and spun_number % 2 == 1:
                 return True
-            if bet_value == 'even' and spun_number % 2 == 0:
+            if bet_value == 'even' and spun_number != 0 and spun_number % 2 == 0:
                 return True
         return False
 

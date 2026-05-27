@@ -1,31 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Roulette</title>
+  <title>Ruleta | Dango Casino</title>
 
   <style>
     :root{
       --bg: #0b1220;
       --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.10);
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.70);
       --line: rgba(255,255,255,.14);
       --shadow: 0 20px 60px rgba(0,0,0,.45);
-      --radius: 18px;
-      --accent: #22c55e; /* green */
-      --danger: #ef4444; /* red */
-      --gold: #fbbf24;
-      --focus: rgba(34,197,94,.35);
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --radius: 16px;
+      --accent: #22c55e;
+      --danger: #ef4444;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
 
     *{ box-sizing: border-box; }
-    html, body{ height: 100%; }
     body{
       margin: 0;
+      min-height: 100vh;
       font-family: var(--font);
       color: var(--text);
       background:
@@ -33,74 +30,62 @@
         radial-gradient(900px 600px at 90% 10%, rgba(251,191,36,.15), transparent 55%),
         radial-gradient(900px 600px at 50% 110%, rgba(59,130,246,.14), transparent 55%),
         linear-gradient(180deg, #070b14, var(--bg));
-      display: grid;
-      place-items: center;
-      padding: 28px 18px;
+      padding: 24px 16px;
     }
 
-    .wrap{
-      width: min(980px, 100%);
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 22px;
-      align-items: start;
+    .container{
+      max-width:980px;
+      margin:0 auto;
     }
 
-    @media (max-width: 860px){
+    .nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+    .nav a,.nav button{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      border-radius:10px;
+      padding:9px 12px;
+      text-decoration:none;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .balance-pill{
+      border:1px solid rgba(34,197,94,.4);
+      background:rgba(34,197,94,.14);
+      color:#dcfce7;
+      border-radius:10px;
+      padding:9px 12px;
+      font-weight:800;
+    }
+
+    .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;}
+
+    @media (max-width: 900px){
       .wrap{ grid-template-columns: 1fr; }
     }
 
     .card{
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: 16px;
       box-shadow: var(--shadow);
       overflow: hidden;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(8px);
     }
 
     .card-header{
-      padding: 18px 18px 14px;
+      padding: 18px;
       border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
-    }
-
-    .title{
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
     }
 
     h1{
-      margin: 0;
+      margin: 0 0 6px;
       font-size: 1.35rem;
-      letter-spacing: .2px;
-      line-height: 1.25;
-    }
-
-    .badge{
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: rgba(34,197,94,.12);
-      border: 1px solid rgba(34,197,94,.22);
-      color: rgba(255,255,255,.92);
-      font-size: .85rem;
-      white-space: nowrap;
-    }
-
-    .badge-dot{
-      width: 8px; height: 8px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 0 3px rgba(34,197,94,.18);
     }
 
     .subtitle{
-      margin: 8px 0 0;
+      margin: 0;
       color: var(--muted);
       font-size: .95rem;
       line-height: 1.45;
@@ -108,21 +93,6 @@
 
     form{
       padding: 18px;
-    }
-
-    .grid{
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    @media (max-width: 520px){
-      .grid{ grid-template-columns: 1fr; }
-    }
-
-    .field{
-      display: grid;
-      gap: 7px;
     }
 
     label{
@@ -133,126 +103,150 @@
     .input, select{
       width: 100%;
       padding: 12px 12px;
-      border-radius: 12px;
+      border-radius: 10px;
       border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      outline: none;
-      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
-    }
-
-    .input::placeholder{ color: rgba(255,255,255,.45); }
-
-    .input:focus, select:focus{
-      border-color: rgba(34,197,94,.45);
-      box-shadow: 0 0 0 4px var(--focus);
       background: rgba(255,255,255,.08);
+      color: var(--text);
     }
 
-    select{
-      appearance: none;
-      background-image:
-        linear-gradient(45deg, transparent 50%, rgba(255,255,255,.65) 50%),
-        linear-gradient(135deg, rgba(255,255,255,.65) 50%, transparent 50%);
-      background-position:
-        calc(100% - 18px) calc(50% - 3px),
-        calc(100% - 13px) calc(50% - 3px);
-      background-size: 6px 6px, 6px 6px;
-      background-repeat: no-repeat;
-      padding-right: 34px;
+    .roulette-board{
+      display:grid;
+      grid-template-columns:64px 1fr;
+      gap:10px;
+      margin-top:12px;
+      margin-bottom:14px;
+      min-width:700px;
     }
 
-    .help{
-      font-size: .83rem;
-      color: rgba(255,255,255,.55);
-      line-height: 1.35;
-      margin-top: 2px;
+    .board-scroll{
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      padding-bottom:6px;
+    }
+
+    .zero-cell{
+      grid-row:1 / span 12;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:10px;
+      background:#166534;
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .numbers-grid{
+      display:grid;
+      grid-template-columns:repeat(12, minmax(44px, 1fr));
+      gap:8px;
+    }
+
+    .bet-cell,
+    .outside-bet{
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:10px;
+      padding:10px 8px;
+      text-align:center;
+      font-weight:800;
+      color:#fff;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .bet-red{background:#b91c1c;}
+    .bet-black{background:#111827;}
+    .outside-row{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(80px, 1fr));
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .outside-bet[data-bet-value="red"]{background:#b91c1c;}
+    .outside-bet[data-bet-value="black"]{background:#111827;}
+    .outside-bet[data-bet-value="even"],
+    .outside-bet[data-bet-value="odd"]{background:#1f2937;}
+
+    @media (max-width: 900px){
+      .outside-row{
+        grid-template-columns:repeat(2, minmax(120px, 1fr));
+      }
+
+      .roulette-board{
+        min-width:620px;
+      }
+
+      .numbers-grid{
+        grid-template-columns:repeat(12, minmax(36px, 1fr));
+        gap:6px;
+      }
+
+      .bet-cell,
+      .outside-bet{
+        padding:8px 6px;
+        font-size:.9rem;
+      }
+    }
+
+    .selected-bet{
+      outline:3px solid #fbbf24;
+      box-shadow:0 0 0 2px rgba(251,191,36,.35);
+    }
+
+    .selection-summary{
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:10px;
+      padding:10px 12px;
+      background:rgba(255,255,255,.06);
+      margin-bottom:12px;
+      color:var(--muted);
+    }
+
+    .selection-summary strong{color:var(--text);}
+
+    .form-error{
+      border:1px solid rgba(239,68,68,.35);
+      border-radius:10px;
+      padding:10px 12px;
+      background:rgba(239,68,68,.12);
+      margin-bottom:12px;
+      display:none;
+    }
+
+    .amount-help{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:.9rem;
     }
 
     .actions{
       display: flex;
       gap: 12px;
       margin-top: 16px;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
+      flex-wrap:wrap;
     }
 
     .btn{
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
       padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.08);
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 600;
-      transition: transform .08s ease, background .15s ease, border-color .15s ease;
-      min-width: 180px;
-    }
-
-    .btn:hover{
-      background: rgba(255,255,255,.10);
-      border-color: rgba(255,255,255,.22);
-    }
-
-    .btn:active{ transform: translateY(1px); }
-
-    .btn-primary{
+      border-radius: 10px;
+      border: 1px solid rgba(34,197,94,.55);
       background: linear-gradient(180deg, rgba(34,197,94,.95), rgba(34,197,94,.75));
-      border-color: rgba(34,197,94,.55);
       color: #07120b;
-      box-shadow: 0 16px 30px rgba(34,197,94,.18);
+      cursor: pointer;
+      font-weight: 800;
     }
 
-    .btn-primary:hover{
-      background: linear-gradient(180deg, rgba(34,197,94,1), rgba(34,197,94,.82));
-      border-color: rgba(34,197,94,.7);
-    }
-
-    .btn svg{ width: 18px; height: 18px; }
-
-    .chips{
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .chip{
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-      font-size: .85rem;
-      color: rgba(255,255,255,.82);
-    }
-
-    /* Result card */
     .result{
       padding: 18px;
+      display:grid;
+      gap:10px;
     }
 
-    .result h2{
-      margin: 0 0 10px;
-      font-size: 1.05rem;
-      color: rgba(255,255,255,.92);
-    }
-
-    .result-grid{
-      display: grid;
-      gap: 12px;
-    }
-
-    .kv{
-      padding: 12px;
-      border-radius: 14px;
+    .row{
+      padding: 10px 12px;
+      border-radius: 10px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.05);
       display: flex;
-      align-items: baseline;
       justify-content: space-between;
       gap: 10px;
     }
@@ -263,185 +257,453 @@
     }
 
     .v{
-      font-weight: 700;
-      letter-spacing: .2px;
+      font-weight: 800;
     }
 
-    .pill{
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: .9rem;
-      border: 1px solid rgba(255,255,255,.14);
+    .messages{display:grid;gap:8px;margin-bottom:12px;}
+    .msg{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);}
+    .empty{padding:18px;color:var(--muted);}
+
+    .wheel-card{
       background: rgba(255,255,255,.06);
-      width: fit-content;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      display: grid;
+      gap: 10px;
+      justify-items: center;
     }
 
-    .pill.win{
-      border-color: rgba(34,197,94,.35);
-      background: rgba(34,197,94,.12);
+    .wheel-wrap{
+      position: relative;
+      width: min(320px, 80vw);
+      height: min(320px, 80vw);
     }
 
-    .pill.lose{
-      border-color: rgba(239,68,68,.35);
-      background: rgba(239,68,68,.12);
+    .wheel-pointer{
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -10px;
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-top: 24px solid #fbbf24;
+      z-index: 3;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,.5));
     }
 
-    .pill .dot{
-      width: 10px; height: 10px;
-      border-radius: 999px;
-      background: var(--gold);
-      box-shadow: 0 0 0 3px rgba(251,191,36,.18);
+    .wheel{
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 8px solid #0f172a;
+      background: conic-gradient(
+        from 0deg,
+        #166534 0deg 9.73deg,
+        #b91c1c 9.73deg 19.46deg,
+        #111827 19.46deg 29.19deg,
+        #b91c1c 29.19deg 38.92deg,
+        #111827 38.92deg 48.65deg,
+        #b91c1c 48.65deg 58.38deg,
+        #111827 58.38deg 68.11deg,
+        #b91c1c 68.11deg 77.84deg,
+        #111827 77.84deg 87.57deg,
+        #b91c1c 87.57deg 97.3deg,
+        #111827 97.3deg 107.03deg,
+        #b91c1c 107.03deg 116.76deg,
+        #111827 116.76deg 126.49deg,
+        #b91c1c 126.49deg 136.22deg,
+        #111827 136.22deg 145.95deg,
+        #b91c1c 145.95deg 155.68deg,
+        #111827 155.68deg 165.41deg,
+        #b91c1c 165.41deg 175.14deg,
+        #111827 175.14deg 184.87deg,
+        #b91c1c 184.87deg 194.6deg,
+        #111827 194.6deg 204.33deg,
+        #b91c1c 204.33deg 214.06deg,
+        #111827 214.06deg 223.79deg,
+        #b91c1c 223.79deg 233.52deg,
+        #111827 233.52deg 243.25deg,
+        #b91c1c 243.25deg 252.98deg,
+        #111827 252.98deg 262.71deg,
+        #b91c1c 262.71deg 272.44deg,
+        #111827 272.44deg 282.17deg,
+        #b91c1c 282.17deg 291.9deg,
+        #111827 291.9deg 301.63deg,
+        #b91c1c 301.63deg 311.36deg,
+        #111827 311.36deg 321.09deg,
+        #b91c1c 321.09deg 330.82deg,
+        #111827 330.82deg 340.55deg,
+        #b91c1c 340.55deg 350.28deg,
+        #111827 350.28deg 360deg
+      );
+      box-shadow: 0 18px 36px rgba(0,0,0,.45);
+      transition: transform 4.2s cubic-bezier(0.18, 0.85, 0.2, 1);
+      transform: rotate(0deg);
+      overflow: hidden;
     }
 
-    footer{
-      margin-top: 14px;
-      padding: 0 4px;
-      color: rgba(255,255,255,.55);
-      font-size: .85rem;
-      line-height: 1.4;
+    .wheel-center{
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #0b1220;
+      border: 4px solid rgba(255,255,255,.22);
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
     }
 
-    a{
-      color: rgba(34,197,94,.95);
-      text-decoration: none;
+    .wheel-labels{
+      position:absolute;
+      inset: 0;
+      pointer-events:none;
     }
-    a:hover{ text-decoration: underline; }
+
+    .wheel-label{
+      position:absolute;
+      left:50%;
+      top:50%;
+      width: 24px;
+      text-align: center;
+      transform-origin: center center;
+      color:#fff;
+      font-size:11px;
+      font-weight:700;
+      text-shadow:0 1px 3px rgba(0,0,0,.9);
+    }
+
+    .spin-status{
+      color: var(--muted);
+      font-weight: 700;
+      min-height: 22px;
+      text-align: center;
+    }
+
+    .result-hidden{
+      display:none;
+    }
+
+    .result-highlight{
+      font-size: 1.35rem;
+      font-weight: 900;
+      text-align: center;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.08);
+    }
+
+    .result-highlight.win{
+      border-color: rgba(34,197,94,.55);
+      background: rgba(34,197,94,.14);
+    }
+
+    .result-highlight.lose{
+      border-color: rgba(239,68,68,.45);
+      background: rgba(239,68,68,.14);
+    }
+
+    .play-again{
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    .secondary-btn{
+      display:inline-block;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.2);
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      text-decoration:none;
+      font-weight:700;
+    }
   </style>
 </head>
 
 <body>
-  <main class="wrap">
+  <div class="container">
+    <nav class="nav" aria-label="Navegación principal">
+      <a href="{% url 'home' %}">Inicio</a>
+      <a href="{% url 'play_roulette' %}">Jugar ruleta</a>
+      {% if request.session.player_id %}
+        <span class="balance-pill">Hola, {{ current_player.username }} · Saldo: ${{ current_player.balance|floatformat:2 }}</span>
+        <form method="post" action="{% url 'logout' %}" style="margin:0;">
+          {% csrf_token %}
+          <button type="submit">Cerrar sesión</button>
+        </form>
+      {% else %}
+        <a href="{% url 'register' %}">Crear cuenta</a>
+        <a href="{% url 'login' %}">Iniciar sesión</a>
+      {% endif %}
+    </nav>
 
-    <!-- Main form card -->
-    <section class="card" aria-label="Roulette game">
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="msg">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <main class="wrap">
+
+    <section class="card">
       <header class="card-header">
-        <div class="title">
-          <h1>Play Roulette</h1>
-          <span class="badge" title="Ready to spin">
-            <span class="badge-dot" aria-hidden="true"></span>
-            Live Table
-          </span>
-        </div>
-        <p class="subtitle">
-          Choose your bet type, set the stake, and spin the wheel. Keep it clean: the view sends the request to
-          <strong>{% url 'play_roulette' %}</strong>.
-        </p>
+        <h1>Jugar ruleta</h1>
+        <p class="subtitle">Apuesta rápido y mira el resultado al instante.</p>
       </header>
 
       <form method="post" action="{% url 'play_roulette' %}">
         {% csrf_token %}
 
-        <div class="grid">
-          <div class="field">
-            <label for="user_id">User ID</label>
-            <input class="input" id="user_id" type="number" name="user_id" value="1" min="1" inputmode="numeric" />
-            <div class="help">Use the correct user ID from your test users.</div>
+        <section class="wheel-card" aria-label="Ruleta visual">
+          <div class="wheel-wrap">
+            <div class="wheel-pointer" aria-hidden="true"></div>
+            <div class="wheel" id="rouletteWheel">
+              <div class="wheel-labels" id="wheelLabels"></div>
+              <div class="wheel-center" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="spin-status" id="spinStatus"></div>
+        </section>
+
+        <div>
+          <label for="amount">Monto</label>
+          <input class="input" id="amount" type="number" name="amount" step="0.01" min="0" placeholder="Ej: 100" required />
+          <div class="amount-help">Saldo disponible: ${{ current_player.balance|floatformat:2 }}</div>
+        </div>
+
+        <input type="hidden" id="bet_type" name="bet_type" />
+        <input type="hidden" id="bet_value" name="bet_value" />
+
+        <div>
+          <label>Selecciona tu apuesta</label>
+          <div class="outside-row">
+            <button type="button" class="outside-bet" data-bet-type="color" data-bet-value="red" data-label="Rojo">Rojo</button>
+            <button type="button" class="outside-bet" data-bet-type="color" data-bet-value="black" data-label="Negro">Negro</button>
+            <button type="button" class="outside-bet" data-bet-type="odd_even" data-bet-value="even" data-label="Par">Par</button>
+            <button type="button" class="outside-bet" data-bet-type="odd_even" data-bet-value="odd" data-label="Impar">Impar</button>
           </div>
 
-          <div class="field">
-            <label for="amount">Amount</label>
-            <input class="input" id="amount" type="number" name="amount" step="0.01" min="0" placeholder="e.g. 10.00" />
-            <div class="help">Enter the stake amount for this spin.</div>
+          <div class="board-scroll">
+            <div class="roulette-board" id="rouletteBoard">
+              <button type="button" class="zero-cell" data-bet-type="number" data-bet-value="0" data-label="Número 0">0</button>
+              <div class="numbers-grid" id="numbersGrid"></div>
+            </div>
           </div>
 
-          <div class="field">
-            <label for="bet_type">Bet type</label>
-            <select id="bet_type" name="bet_type">
-              <option value="number">Number</option>
-              <option value="color">Color</option>
-              <option value="odd_even">Odd / Even</option>
-            </select>
-            <div class="help">Select how you want to bet.</div>
-          </div>
-
-          <div class="field">
-            <label for="bet_value">Bet value</label>
-            <input class="input" id="bet_value" type="text" name="bet_value" placeholder="e.g. 7, red, odd" />
-            <div class="help">Examples: <strong>7</strong>, <strong>red</strong>, <strong>odd</strong>.</div>
-          </div>
+          <div class="selection-summary" id="selectionSummary">Apuesta seleccionada: <strong>Ninguna</strong></div>
+          <div class="form-error" id="formError">Selecciona una apuesta en el tablero antes de girar la ruleta.</div>
         </div>
 
         <div class="actions">
-          <button class="btn btn-primary" type="submit">
-            <!-- icon -->
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M12 18v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M4.93 4.93l2.83 2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M16.24 16.24l2.83 2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M2 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M18 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M4.93 19.07l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            Spin
+          <button class="btn" id="spinBtn" type="submit">
+            Girar ruleta
           </button>
-
-          <div class="chips" aria-label="Quick tips">
-            <span class="chip">Number: 0–36</span>
-            <span class="chip">Color: red/black</span>
-            <span class="chip">Odd/Even</span>
-          </div>
         </div>
-
-        <footer>
-          Tip: if you want to validate inputs client-side later, do it here—but keep server rules in your service/domain.
-        </footer>
       </form>
     </section>
 
-    <!-- Result card -->
-    <aside class="card" aria-label="Roulette result">
+    <aside class="card">
       <header class="card-header">
-        <div class="title">
-          <h1 style="font-size:1.15rem;">Result</h1>
-          {% if result %}
-            {% if result.win %}
-              <span class="pill win"><span class="dot" aria-hidden="true"></span> WIN</span>
-            {% else %}
-              <span class="pill lose"><span class="dot" aria-hidden="true"></span> LOSE</span>
-            {% endif %}
-          {% else %}
-            <span class="pill"><span class="dot" aria-hidden="true"></span> Waiting</span>
-          {% endif %}
-        </div>
-        <p class="subtitle">Your last spin outcome will appear here.</p>
+        <h1 style="font-size:1.1rem;">Resultado</h1>
+        <p class="subtitle">El resultado de tu última jugada aparece aquí.</p>
       </header>
 
-      <div class="result">
+      <div class="result {% if result %}result-hidden{% endif %}" id="resultPanel">
         {% if result %}
-          <div class="result-grid">
-            <div class="kv">
-              <span class="k">Spun number</span>
+            <div class="result-highlight {% if result.win %}win{% else %}lose{% endif %}">
+              {% if result.win %}Ganaste{% else %}No ganaste esta vez{% endif %}
+            </div>
+
+            <div class="row">
+              <span class="k">Número ganador</span>
               <span class="v">{{ result.spun_number }}</span>
             </div>
 
-            <div class="kv">
-              <span class="k">Win</span>
-              <span class="v">
-                {% if result.win %}Yes{% else %}No{% endif %}
-              </span>
+            <div class="row">
+              <span class="k">Color</span>
+              <span class="v">{% if result.winning_color == 'red' %}Rojo{% elif result.winning_color == 'black' %}Negro{% else %}Verde{% endif %}</span>
             </div>
 
-            <div class="kv">
-              <span class="k">Payout</span>
+            <div class="row">
+              <span class="k">Ganaste</span>
+              <span class="v">{% if result.win %}Sí{% else %}No{% endif %}</span>
+            </div>
+
+            <div class="row">
+              <span class="k">Premio</span>
               <span class="v">{{ result.payout }}</span>
             </div>
-          </div>
+
+            <div class="row">
+              <span class="k">Apostaste</span>
+              <span class="v">{{ result.amount|default:0 }}</span>
+            </div>
+
+            <div class="row">
+              <span class="k">Saldo actualizado</span>
+              <span class="v">{{ result.balance_after|default:current_player.balance|floatformat:2 }}</span>
+            </div>
+
+            {% if result.message %}
+              <div class="msg">{{ result.message }}</div>
+            {% endif %}
+
+            {% if result.system_notice %}
+              <div class="msg">{{ result.system_notice }}</div>
+            {% endif %}
+
+            <div class="play-again">
+              <a class="secondary-btn" href="{% url 'play_roulette' %}">Volver a jugar</a>
+            </div>
         {% else %}
-          <p style="margin:0; color: rgba(255,255,255,.70); line-height:1.5;">
-            Place a bet and spin to see results. Your request will be posted to
-            <strong>{% url 'play_roulette' %}</strong>.
-          </p>
+          <p class="empty">Completa tu apuesta y presiona Jugar.</p>
         {% endif %}
       </div>
     </aside>
 
   </main>
+  </div>
+
+  <script>
+    (function () {
+      const redNumbers = new Set([1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]);
+      const rouletteOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+      const numbersGrid = document.getElementById('numbersGrid');
+      const rouletteForm = document.querySelector('form[action="{% url 'play_roulette' %}"]');
+      const betTypeInput = document.getElementById('bet_type');
+      const betValueInput = document.getElementById('bet_value');
+      const selectionSummary = document.getElementById('selectionSummary');
+      const formError = document.getElementById('formError');
+      const amountInput = document.getElementById('amount');
+      const spinBtn = document.getElementById('spinBtn');
+      const wheel = document.getElementById('rouletteWheel');
+      const wheelLabels = document.getElementById('wheelLabels');
+      const spinStatus = document.getElementById('spinStatus');
+      const resultPanel = document.getElementById('resultPanel');
+      const currentBalance = Number("{{ current_player.balance|default:0 }}");
+
+      let spinning = false;
+
+      const sector = 360 / rouletteOrder.length;
+      const labelRadius = 130;
+
+      rouletteOrder.forEach((num, idx) => {
+        // Center each label in its wheel sector and keep text upright.
+        const angle = (idx * sector) + (sector / 2);
+        const el = document.createElement('span');
+        el.className = 'wheel-label';
+        el.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translate(0, -${labelRadius}px) rotate(${-angle}deg)`;
+        el.textContent = num;
+        wheelLabels.appendChild(el);
+      });
+
+      for (let n = 1; n <= 36; n++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'bet-cell ' + (redNumbers.has(n) ? 'bet-red' : 'bet-black');
+        btn.textContent = String(n);
+        btn.dataset.betType = 'number';
+        btn.dataset.betValue = String(n);
+        btn.dataset.label = 'Número ' + n;
+        numbersGrid.appendChild(btn);
+      }
+
+      const allBetButtons = Array.from(document.querySelectorAll('[data-bet-type][data-bet-value]'));
+
+      function clearSelection() {
+        allBetButtons.forEach((el) => el.classList.remove('selected-bet'));
+      }
+
+      function setSelection(el) {
+        clearSelection();
+        el.classList.add('selected-bet');
+        betTypeInput.value = el.dataset.betType;
+        betValueInput.value = el.dataset.betValue;
+        selectionSummary.innerHTML = 'Apuesta seleccionada: <strong>' + el.dataset.label + '</strong>';
+        formError.style.display = 'none';
+      }
+
+      allBetButtons.forEach((btn) => {
+        btn.addEventListener('click', function () {
+          setSelection(this);
+        });
+      });
+
+      rouletteForm.addEventListener('submit', function (event) {
+        if (spinning) {
+          event.preventDefault();
+          return;
+        }
+
+        if (!betTypeInput.value || !betValueInput.value) {
+          event.preventDefault();
+          formError.style.display = 'block';
+          formError.textContent = 'Selecciona una apuesta en el tablero antes de girar la ruleta.';
+          return;
+        }
+
+        const amount = Number(amountInput.value);
+        if (!amount || amount <= 0) {
+          event.preventDefault();
+          formError.style.display = 'block';
+          formError.textContent = 'Ingresa un monto válido mayor a 0.';
+          return;
+        }
+
+        if (amount > currentBalance) {
+          event.preventDefault();
+          formError.style.display = 'block';
+          formError.textContent = 'Tu saldo disponible es $' + currentBalance.toFixed(2) + '. Ingresa un monto menor o igual a tu saldo.';
+          return;
+        }
+
+        spinning = true;
+        spinBtn.disabled = true;
+        spinBtn.textContent = 'Girando...';
+        spinStatus.textContent = 'La ruleta está girando...';
+      });
+
+      {% if result %}
+      (function runResultAnimation() {
+        const winningNumber = Number("{{ result.spun_number|default:'0' }}");
+        const index = rouletteOrder.indexOf(winningNumber);
+        const sector = 360 / rouletteOrder.length;
+        const targetAngle = index >= 0 ? (index * sector + sector / 2) : 0;
+        const spins = 6;
+        const finalRotation = spins * 360 + (360 - targetAngle);
+
+        spinStatus.textContent = 'La ruleta está girando...';
+        resultPanel.classList.add('result-hidden');
+
+        requestAnimationFrame(() => {
+          wheel.style.transform = `rotate(${finalRotation}deg)`;
+        });
+
+        setTimeout(() => {
+          spinStatus.textContent = 'La bola está por caer...';
+        }, 1800);
+
+        setTimeout(() => {
+          spinStatus.textContent = 'Casi tenemos un resultado...';
+        }, 3000);
+
+        setTimeout(() => {
+          spinStatus.textContent = 'Resultado listo.';
+          resultPanel.classList.remove('result-hidden');
+        }, 4300);
+      })();
+      {% endif %}
+    })();
+  </script>
 </body>
 </html>

@@ -1,347 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Register</title>
+  <title>Crear cuenta | Dango Casino</title>
 
-  <!-- Same style language as Roulette page -->
   <style>
     :root{
-      --bg: #0b1220;
-      --card: rgba(255,255,255,.06);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
-      --line: rgba(255,255,255,.14);
-      --shadow: 0 20px 60px rgba(0,0,0,.45);
-      --radius: 18px;
-      --accent: #22c55e;
-      --danger: #ef4444;
-      --focus: rgba(34,197,94,.35);
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --bg:#0b1220;
+      --card:rgba(255,255,255,.06);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.7);
+      --line:rgba(255,255,255,.14);
+      --accent:#22c55e;
+      --danger:#ef4444;
+      --radius:16px;
+      --shadow:0 20px 60px rgba(0,0,0,.45);
+      --font:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
     }
 
     *{ box-sizing: border-box; }
-    html, body{ height: 100%; }
     body{
       margin: 0;
+      min-height: 100vh;
       font-family: var(--font);
       color: var(--text);
       background:
         radial-gradient(1200px 700px at 20% -10%, rgba(34,197,94,.18), transparent 50%),
         radial-gradient(900px 600px at 90% 10%, rgba(251,191,36,.15), transparent 55%),
-        radial-gradient(900px 600px at 50% 110%, rgba(59,130,246,.14), transparent 55%),
         linear-gradient(180deg, #070b14, var(--bg));
-      display: grid;
-      place-items: center;
-      padding: 28px 18px;
+      padding: 24px 16px;
     }
 
-    .wrap{
-      width: min(980px, 100%);
-      display: grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap: 22px;
-      align-items: start;
+    .container{
+      max-width: 920px;
+      margin: 0 auto;
     }
 
-    @media (max-width: 860px){
-      .wrap{ grid-template-columns: 1fr; }
+    .nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .nav a,
+    .nav button{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      border-radius:10px;
+      padding:9px 12px;
+      text-decoration:none;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .balance-pill{
+      border:1px solid rgba(34,197,94,.4);
+      background:rgba(34,197,94,.14);
+      color:#dcfce7;
+      border-radius:10px;
+      padding:9px 12px;
+      font-weight:800;
     }
 
     .card{
+      max-width:620px;
+      margin:0 auto;
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow: hidden;
-      backdrop-filter: blur(10px);
     }
 
-    .card-header{
-      padding: 18px 18px 14px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+    .header{
+      padding:18px;
+      border-bottom:1px solid var(--line);
     }
 
-    .title{
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+    .header h1{
+      margin:0 0 6px;
+      font-size:1.35rem;
     }
 
-    h1{
-      margin: 0;
-      font-size: 1.35rem;
-      letter-spacing: .2px;
-      line-height: 1.25;
+    .header p{
+      margin:0;
+      color:var(--muted);
     }
 
-    .badge{
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: rgba(34,197,94,.12);
-      border: 1px solid rgba(34,197,94,.22);
-      color: rgba(255,255,255,.92);
-      font-size: .85rem;
-      white-space: nowrap;
-    }
-    .badge-dot{
-      width: 8px; height: 8px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 0 3px rgba(34,197,94,.18);
-    }
-
-    .subtitle{
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: .95rem;
-      line-height: 1.45;
-    }
-
-    form{ padding: 18px; }
-
-    .grid{
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    @media (max-width: 520px){
-      .grid{ grid-template-columns: 1fr; }
-    }
-
-    .field{
-      display: grid;
-      gap: 7px;
+    form{
+      padding:18px;
+      display:grid;
+      gap:12px;
     }
 
     label{
-      font-size: .9rem;
-      color: var(--muted);
+      font-size:.92rem;
+      color:var(--muted);
     }
 
     .input{
       width: 100%;
-      padding: 12px 12px;
-      border-radius: 12px;
+      padding: 12px;
+      border-radius: 10px;
       border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      outline: none;
-      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
-    }
-
-    .input::placeholder{ color: rgba(255,255,255,.45); }
-
-    .input:focus{
-      border-color: rgba(34,197,94,.45);
-      box-shadow: 0 0 0 4px var(--focus);
       background: rgba(255,255,255,.08);
+      color: var(--text);
     }
 
     .help{
-      font-size: .83rem;
-      color: rgba(255,255,255,.55);
-      line-height: 1.35;
-      margin-top: 2px;
-    }
-
-    .actions{
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
+      font-size:.84rem;
+      color:var(--muted);
+      margin-top:4px;
     }
 
     .btn{
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.08);
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 700;
-      transition: transform .08s ease, background .15s ease, border-color .15s ease;
-      min-width: 180px;
-    }
-
-    .btn:hover{
-      background: rgba(255,255,255,.10);
-      border-color: rgba(255,255,255,.22);
-    }
-
-    .btn:active{ transform: translateY(1px); }
-
-    .btn-primary{
+      border: 1px solid rgba(34,197,94,.55);
       background: linear-gradient(180deg, rgba(34,197,94,.95), rgba(34,197,94,.75));
-      border-color: rgba(34,197,94,.55);
       color: #07120b;
-      box-shadow: 0 16px 30px rgba(34,197,94,.18);
+      border-radius: 10px;
+      padding: 11px 14px;
+      cursor: pointer;
+      font-weight: 800;
     }
-
-    .btn-primary:hover{
-      background: linear-gradient(180deg, rgba(34,197,94,1), rgba(34,197,94,.82));
-      border-color: rgba(34,197,94,.7);
-    }
-
-    .btn svg{ width: 18px; height: 18px; }
-
-    /* Side card */
-    .info{
-      padding: 18px;
-    }
-
-    .info h2{
-      margin: 0 0 10px;
-      font-size: 1.05rem;
-      color: rgba(255,255,255,.92);
-    }
-
-    .kv{
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .k{ color: rgba(255,255,255,.70); font-size: .9rem; }
-    .v{ font-weight: 800; letter-spacing: .2px; }
 
     .alert{
       margin: 12px 18px 0;
-      padding: 12px 12px;
-      border-radius: 14px;
+      padding: 12px;
+      border-radius: 10px;
       border: 1px solid rgba(239,68,68,.28);
       background: rgba(239,68,68,.10);
-      color: rgba(255,255,255,.92);
-      line-height: 1.35;
-      font-size: .95rem;
     }
 
-    footer{
-      margin-top: 14px;
-      padding: 0 4px;
-      color: rgba(255,255,255,.55);
-      font-size: .85rem;
-      line-height: 1.4;
+    .messages{
+      max-width:620px;
+      margin:0 auto 12px;
+      display:grid;
+      gap:8px;
     }
 
-    a{
-      color: rgba(34,197,94,.95);
-      text-decoration: none;
+    .msg{
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.2);
+      background:rgba(255,255,255,.08);
     }
-    a:hover{ text-decoration: underline; }
   </style>
 </head>
 
 <body>
-  <main class="wrap">
+  <div class="container">
+    <nav class="nav" aria-label="Navegación principal">
+      <a href="{% url 'home' %}">Inicio</a>
+      <a href="{% url 'play_roulette' %}">Jugar ruleta</a>
+      {% if current_player %}
+        <span class="balance-pill">Hola, {{ current_player.username }} · Saldo: ${{ current_player.balance|floatformat:2 }}</span>
+        <form method="post" action="{% url 'logout' %}" style="margin:0;">
+          {% csrf_token %}
+          <button type="submit">Cerrar sesión</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}">Iniciar sesión</a>
+      {% endif %}
+    </nav>
 
-    <!-- Register Card -->
-    <section class="card" aria-label="Register player">
-      <header class="card-header">
-        <div class="title">
-          <h1>Create a Player Account</h1>
-          <span class="badge" title="New Player">
-            <span class="badge-dot" aria-hidden="true"></span>
-            Register
-          </span>
-        </div>
-        <p class="subtitle">
-          Create your player profile to start betting. This form posts to the same route you already use
-          (<strong>method="post"</strong> with CSRF), without changing any addresses.
-        </p>
-      </header>
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="msg">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <section class="card">
+      <div class="header">
+        <h1>Crear cuenta</h1>
+        <p>Regístrate para empezar a jugar ruleta.</p>
+      </div>
 
       {% if error %}
-        <div class="alert" role="alert">
-          <strong>Error:</strong> {{ error }}
+        <div class="alert">
+          {{ error }}
         </div>
       {% endif %}
 
-      <!-- Keep addresses exactly: no action specified, uses current route -->
       <form method="post">
         {% csrf_token %}
 
-        <div class="grid">
-          <div class="field">
-            <label for="username">Username</label>
-            <input class="input" id="username" type="text" name="username" required placeholder="e.g. alejo23" />
-            <div class="help">Pick something short and memorable.</div>
-          </div>
-
-          <div class="field">
-            <label for="balance">Starting Balance</label>
-            <input class="input" id="balance" type="number" name="balance" value="1000" step="0.01" min="0" inputmode="decimal" />
-            <div class="help">Default: 1000.00 — you can adjust for testing.</div>
-          </div>
+        <div>
+          <label for="username">Nombre de usuario</label>
+          <input class="input" id="username" type="text" name="username" required placeholder="Ej: jugador123" />
         </div>
 
-        <div class="actions">
-          <button class="btn btn-primary" type="submit">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M4 20c1.5-4 6-6 8-6s6.5 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Register
-          </button>
-
-          <footer>
-            After registering, you can go play Roulette from your navigation (or your existing route).
-          </footer>
+        <div>
+          <label for="balance">Saldo inicial</label>
+          <input class="input" id="balance" type="number" name="balance" value="1000" step="0.01" min="0" inputmode="decimal" />
+          <div class="help">Puedes dejar el valor por defecto para pruebas rápidas.</div>
         </div>
+
+        <button class="btn" type="submit">Crear cuenta y continuar</button>
       </form>
     </section>
-
-    <!-- Info / Preview card (right side) -->
-    <aside class="card" aria-label="Registration details">
-      <header class="card-header">
-        <div class="title">
-          <h1 style="font-size:1.15rem;">Account Preview</h1>
-          <span class="badge" style="background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14);">
-            <span class="badge-dot" style="background: rgba(251,191,36,.95); box-shadow: 0 0 0 3px rgba(251,191,36,.18);" aria-hidden="true"></span>
-            Ready
-          </span>
-        </div>
-        <p class="subtitle">What gets created when you submit the form.</p>
-      </header>
-
-      <div class="info">
-        <h2>Defaults</h2>
-        <div class="kv">
-          <span class="k">Starting balance</span>
-          <span class="v">1000.00</span>
-        </div>
-        <div class="kv">
-          <span class="k">Security</span>
-          <span class="v">CSRF ✅</span>
-        </div>
-
-        <h2 style="margin-top:14px;">Tips</h2>
-        <p style="margin:0; color: rgba(255,255,255,.70); line-height:1.5;">
-          Keep server-side validation in your service layer (Clean Architecture), but you can add lightweight UX
-          helpers here later (placeholders, min values, etc.).
-        </p>
-      </div>
-    </aside>
-
-  </main>
+  </div>
 </body>
 </html>

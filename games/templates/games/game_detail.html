@@ -1,10 +1,41 @@
 <!doctype html>
-<html>
-  <head><meta charset="utf-8"><title>{{ game.name }}</title></head>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ game.name }} | Dango Casino</title>
+    <style>
+      body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;padding:24px;background:#0b1220;color:#eef2ff;}
+      .container{max-width:900px;margin:0 auto;}
+      .nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+      .nav a,.nav button{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#eef2ff;border-radius:10px;padding:8px 12px;text-decoration:none;font-weight:700;cursor:pointer;}
+      .balance-pill{border:1px solid rgba(34,197,94,.4);background:rgba(34,197,94,.14);color:#dcfce7;border-radius:10px;padding:8px 12px;font-weight:800;}
+      .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:16px;}
+      .back{display:inline-block;margin-bottom:12px;color:#86efac;}
+    </style>
+  </head>
   <body>
-    <a href="{% url 'game-list' %}">← Back</a>
+    <main class="container">
+      <nav class="nav">
+        <a href="{% url 'home' %}">Inicio</a>
+        <a href="{% url 'play_roulette' %}">Jugar ruleta</a>
+        {% if current_player %}
+          <span class="balance-pill">Hola, {{ current_player.username }} · Saldo: ${{ current_player.balance|floatformat:2 }}</span>
+          <form method="post" action="{% url 'logout' %}" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit">Cerrar sesión</button>
+          </form>
+        {% else %}
+          <a href="{% url 'register' %}">Crear cuenta</a>
+          <a href="{% url 'login' %}">Iniciar sesión</a>
+        {% endif %}
+      </nav>
 
-    <h1>{{ game.name }}</h1>
-    <p>{{ game.description }}</p>
+      <section class="card">
+        <a class="back" href="{% url 'game_list' %}">Volver a juegos</a>
+        <h1>{{ game.name }}</h1>
+        <p>{{ game.description }}</p>
+      </section>
+    </main>
   </body>
 </html>
