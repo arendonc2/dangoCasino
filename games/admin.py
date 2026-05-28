@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Bet, Game, Player, RouletteBet, Deposit
+from .models import Bet, Game, Player, RouletteBet, Deposit, PurchaseOrder, PurchaseOrderItem
 
 
 @admin.register(Player)
@@ -50,3 +50,23 @@ class DepositAdmin(admin.ModelAdmin):
         "created_at",
     ]
     ordering = ["-created_at"]
+
+
+class PurchaseOrderItemInline(admin.TabularInline):
+    model = PurchaseOrderItem
+    extra = 0
+    readonly_fields = ("product_name", "quantity", "unit_price", "subtotal")
+
+
+@admin.register(PurchaseOrder)
+class PurchaseOrderAdmin(admin.ModelAdmin):
+    list_display = ("id", "player", "status", "subtotal", "total", "created_at")
+    list_filter = ("status", "created_at")
+    search_fields = ("player__username",)
+    inlines = [PurchaseOrderItemInline]
+
+
+@admin.register(PurchaseOrderItem)
+class PurchaseOrderItemAdmin(admin.ModelAdmin):
+    list_display = ("id", "order", "product_name", "quantity", "unit_price", "subtotal")
+    search_fields = ("product_name", "order__id", "order__player__username")

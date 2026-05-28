@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Compra confirmada | Dango Casino{% endblock %}
+
+{% block extra_css %}
+<style>
+  body {
+    background: linear-gradient(160deg, #0f172a 0%, #111827 55%, #1f2937 100%);
+    color: #e5e7eb;
+  }
+  .page {
+    max-width: 980px;
+  }
+  .ok-banner {
+    background: linear-gradient(135deg, #166534, #15803d);
+    border: 1px solid rgba(187, 247, 208, 0.35);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .ok-banner h1 {
+    margin: 0;
+    font-size: 1.4rem;
+  }
+  .ok-banner p {
+    margin: 6px 0 0;
+    color: #dcfce7;
+  }
+  .receipt {
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid #e2e8f0;
+  }
+  .receipt-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .label {
+    font-size: 0.78rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 3px;
+  }
+  .value {
+    font-weight: 700;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+  th,
+  td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+  }
+  .right {
+    text-align: right;
+  }
+  .totals {
+    margin-top: 10px;
+    margin-left: auto;
+    max-width: 360px;
+    display: grid;
+    gap: 4px;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .row.total {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid #cbd5e1;
+    font-weight: 800;
+    font-size: 1.08rem;
+  }
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    border-radius: 10px;
+    border: 1px solid transparent;
+    padding: 10px 12px;
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-home { background: #1d4ed8; color: #fff; }
+  .btn-shop { background: #334155; color: #fff; }
+  .btn-print { background: #0f172a; color: #fff; }
+  @media print {
+    .ok-banner,
+    .actions,
+    .messages {
+      display: none !important;
+    }
+    body {
+      background: #fff;
+    }
+    .receipt {
+      border: none;
+      box-shadow: none;
+      padding: 0;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ok-banner">
+  <h1>Compra realizada con exito</h1>
+  <p>Tu pago simulado fue aprobado. Hemos generado tu comprobante de compra.</p>
+</div>
+
+<section class="receipt">
+  <div class="receipt-head">
+    <div>
+      <div class="label">Tienda</div>
+      <div class="value">Dango Casino Store</div>
+    </div>
+    <div>
+      <div class="label">Orden</div>
+      <div class="value">{{ order.order_code }}</div>
+    </div>
+    <div>
+      <div class="label">Fecha</div>
+      <div class="value">{{ order.created_at|date:"Y-m-d H:i" }}</div>
+    </div>
+    <div>
+      <div class="label">Cliente</div>
+      <div class="value">{{ current_player.username }}</div>
+    </div>
+    <div>
+      <div class="label">Estado</div>
+      <div class="value">{{ order.get_status_display }}</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th class="right">Cantidad</th>
+        <th class="right">Precio unitario</th>
+        <th class="right">Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+        <tr>
+          <td>{{ item.product_name }}</td>
+          <td class="right">{{ item.quantity }}</td>
+          <td class="right">${{ item.unit_price|floatformat:2 }}</td>
+          <td class="right">${{ item.subtotal|floatformat:2 }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="totals">
+    <div class="row"><span>Subtotal</span><span>${{ order.subtotal|floatformat:2 }}</span></div>
+    <div class="row"><span>Descuento</span><span>${{ order.discount|floatformat:2 }}</span></div>
+    <div class="row"><span>Impuestos</span><span>${{ order.tax|floatformat:2 }}</span></div>
+    <div class="row"><span>Envio</span><span>${{ order.shipping|floatformat:2 }}</span></div>
+    <div class="row total"><span>Total final</span><span>${{ order.total|floatformat:2 }}</span></div>
+  </div>
+</section>
+
+<div class="actions">
+  <a class="btn btn-home" href="{% url 'home' %}">Volver al inicio</a>
+  <a class="btn btn-shop" href="{% url 'deposit' %}">Seguir comprando</a>
+  <button class="btn btn-print" onclick="window.print()">Imprimir comprobante</button>
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView
-from .models import Game, Player, Deposit
+from .models import Game, Deposit, PurchaseOrder, PurchaseOrderItem
 from .session_utils import get_current_player
 from decimal import Decimal, InvalidOperation
 from django.db import transaction
@@ -33,103 +33,261 @@ class GameDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["current_player"] = get_current_player(self.request)
         return context
-    
+
+
 class DepositView(View):
     TEMPLATE = "games/deposit.html"
-    MIN_DEPOSIT = Decimal("1000")       # monto mínimo en COP
-    MAX_DEPOSIT = Decimal("10000000")   # monto máximo en COP
-    QUICK_AMOUNTS = [10_000, 50_000, 100_000, 500_000, 1_000_000]
- 
+    CART_SESSION_KEY = "checkout_cart"
+    PRODUCT_CATALOG = [
+        {"sku": "chips-10k", "name": "Pack de fichas 10.000", "unit_price": Decimal("10000")},
+        {"sku": "chips-50k", "name": "Pack de fichas 50.000", "unit_price": Decimal("50000")},
+        {"sku": "chips-100k", "name": "Pack de fichas 100.000", "unit_price": Decimal("100000")},
+        {"sku": "chips-500k", "name": "Pack VIP 500.000", "unit_price": Decimal("500000")},
+        {"sku": "chips-1m", "name": "Pack Black 1.000.000", "unit_price": Decimal("1000000")},
+    ]
+
+    def _catalog_index(self):
+        return {item["sku"]: item for item in self.PRODUCT_CATALOG}
+
     def _get_player(self, request, for_update=False):
-        player_id = request.session.get("player_id")
-        if not player_id:
-            return None
-        qs = Player.objects.filter(id=player_id)
-        if for_update:
-            qs = qs.select_for_update()
-        return qs.first()
- 
+        return get_current_player(request, for_update=for_update)
+
+    def _get_cart(self, request):
+        raw = request.session.get(self.CART_SESSION_KEY, [])
+        return raw if isinstance(raw, list) else []
+
+    def _save_cart(self, request, cart):
+        request.session[self.CART_SESSION_KEY] = cart
+        request.session.modified = True
+
+    def _cart_totals(self, cart):
+        subtotal = Decimal("0")
+        for item in cart:
+            item_subtotal = Decimal(str(item.get("subtotal", "0")))
+            subtotal += item_subtotal
+
+        discount = Decimal("0")
+        tax = Decimal("0")
+        shipping = Decimal("0")
+        total = subtotal - discount + tax + shipping
+
+        return {
+            "subtotal": subtotal,
+            "discount": discount,
+            "tax": tax,
+            "shipping": shipping,
+            "total": total,
+        }
+
+    def _validated_checkout_items(self, cart):
+        validated = []
+        for item in cart:
+            name = (item.get("name") or "").strip()
+            if not name:
+                raise ValueError("Hay un producto sin nombre en el carrito.")
+
+            quantity = int(item.get("quantity", 0))
+            if quantity <= 0:
+                raise ValueError("Hay productos con cantidad invalida en el carrito.")
+
+            unit_price = Decimal(str(item.get("unit_price", "0")))
+            subtotal = Decimal(str(item.get("subtotal", "0")))
+
+            if unit_price <= 0 or subtotal <= 0:
+                raise ValueError("Hay productos con precio invalido en el carrito.")
+
+            validated.append({
+                "sku": item.get("sku", "custom"),
+                "name": name,
+                "quantity": quantity,
+                "unit_price": unit_price,
+                "subtotal": subtotal,
+            })
+
+        return validated
+
     def get(self, request):
         player = self._get_player(request)
         if not player:
             return redirect("login")
-        
+
+        cart = self._get_cart(request)
+        totals = self._cart_totals(cart)
+
         return render(request, self.TEMPLATE, {
             "player": player,
-            "quick_amounts": self.QUICK_AMOUNTS,
-            "min_deposit": self.MIN_DEPOSIT,
-            "max_deposit": self.MAX_DEPOSIT,
+            "products": self.PRODUCT_CATALOG,
+            "cart_items": cart,
+            "totals": totals,
         })
- 
+
     def post(self, request):
         player = self._get_player(request)
         if not player:
             return redirect("login")
- 
-        # --- 1. Parsear monto ---
-        raw_amount = request.POST.get("amount", "").strip()
+
+        action = (request.POST.get("action") or "").strip().lower()
+        if action == "add":
+            return self._add_to_cart(request)
+        if action == "remove":
+            return self._remove_from_cart(request)
+        if action == "checkout":
+            return self._checkout(request)
+
+        messages.error(request, "Accion de carrito no valida.")
+        return redirect("deposit")
+
+    def _add_to_cart(self, request):
+        cart = self._get_cart(request)
+        catalog = self._catalog_index()
+
+        sku = (request.POST.get("sku") or "").strip()
+        quantity_raw = (request.POST.get("quantity") or "1").strip()
+
         try:
-            amount = Decimal(raw_amount)
-        except InvalidOperation:
-            messages.error(request, "El monto ingresado no es válido.")
+            quantity = int(quantity_raw)
+        except ValueError:
+            messages.error(request, "La cantidad ingresada no es valida.")
             return redirect("deposit")
- 
-        # --- 2. Validaciones de negocio ---
-        if amount < self.MIN_DEPOSIT:
-            messages.error(
-                request,
-                f"El monto mínimo de recarga es ${self.MIN_DEPOSIT:,.0f} COP."
-            )
+
+        if quantity <= 0:
+            messages.error(request, "La cantidad debe ser mayor a 0.")
             return redirect("deposit")
- 
-        if amount > self.MAX_DEPOSIT:
-            messages.error(
-                request,
-                f"El monto máximo de recarga es ${self.MAX_DEPOSIT:,.0f} COP."
-            )
+
+        if not sku or sku not in catalog:
+            messages.error(request, "Solo puedes agregar productos del catalogo de fichas.")
             return redirect("deposit")
- 
-        # --- 3. Transacción atómica con lock ---
+
+        product = catalog[sku]
+        product_name = product["name"]
+        unit_price = Decimal(product["unit_price"])
+
+        if unit_price <= 0:
+            messages.error(request, "El precio del producto no es valido.")
+            return redirect("deposit")
+
+        existing = next((item for item in cart if item.get("sku") == sku and Decimal(str(item.get("unit_price", "0"))) == unit_price), None)
+        if existing:
+            existing["quantity"] = int(existing.get("quantity", 0)) + quantity
+            existing_subtotal = Decimal(str(existing.get("unit_price", "0"))) * Decimal(existing["quantity"])
+            existing["subtotal"] = str(existing_subtotal)
+        else:
+            subtotal = unit_price * Decimal(quantity)
+            cart.append({
+                "sku": sku,
+                "name": product_name,
+                "quantity": quantity,
+                "unit_price": str(unit_price),
+                "subtotal": str(subtotal),
+            })
+
+        self._save_cart(request, cart)
+        messages.success(request, f"{product_name} agregado al carrito.")
+        return redirect("deposit")
+
+    def _remove_from_cart(self, request):
+        cart = self._get_cart(request)
+        sku = (request.POST.get("sku") or "").strip()
+        if not sku:
+            messages.error(request, "No se pudo identificar el producto a remover.")
+            return redirect("deposit")
+
+        new_cart = [item for item in cart if item.get("sku") != sku]
+        if len(new_cart) == len(cart):
+            messages.error(request, "El producto ya no estaba en el carrito.")
+            return redirect("deposit")
+
+        self._save_cart(request, new_cart)
+        messages.success(request, "Producto eliminado del carrito.")
+        return redirect("deposit")
+
+    def _checkout(self, request):
+        cart = self._get_cart(request)
+        if not cart:
+            messages.error(request, "Tu carrito esta vacio. Agrega productos antes de finalizar compra.")
+            return redirect("deposit")
+
+        try:
+            items = self._validated_checkout_items(cart)
+        except Exception as exc:
+            messages.error(request, f"No se pudo procesar el carrito: {exc}")
+            return redirect("deposit")
+
+        totals = self._cart_totals(items)
+        if totals["total"] <= 0:
+            messages.error(request, "No se puede generar una orden con total 0.")
+            return redirect("deposit")
+
         try:
             with transaction.atomic():
-                # Re-leer jugador con lock para evitar concurrencia
                 player = self._get_player(request, for_update=True)
                 if not player:
-                    raise ValueError("Jugador no encontrado.")
- 
-                balance_before = player.balance
-                player.balance += amount
-                balance_after = player.balance
+                    messages.error(request, "Tu sesion expiro. Inicia sesion nuevamente.")
+                    return redirect("login")
+
+                order = PurchaseOrder.objects.create(
+                    player=player,
+                    status="confirmed",
+                    subtotal=totals["subtotal"],
+                    discount=totals["discount"],
+                    tax=totals["tax"],
+                    shipping=totals["shipping"],
+                    total=totals["total"],
+                )
+
+                for item in items:
+                    PurchaseOrderItem.objects.create(
+                        order=order,
+                        product_name=item["name"],
+                        quantity=item["quantity"],
+                        unit_price=item["unit_price"],
+                        subtotal=item["subtotal"],
+                    )
+
+                balance_before = Decimal(str(player.balance))
+                balance_after = balance_before + totals["total"]
+                player.balance = float(balance_after)
                 player.save(update_fields=["balance"])
- 
-                # Persistir depósito
-                from .models import Deposit  # ajusta el import
+
                 deposit = Deposit.objects.create(
                     player=player,
-                    amount=amount,
+                    amount=totals["total"],
                     balance_before=balance_before,
                     balance_after=balance_after,
                     status="confirmed",
+                    notes=f"Recarga por orden {order.order_code}",
                 )
- 
-        except Exception as e:
-            messages.error(
-                request,
-                "Ocurrió un error procesando la recarga. Intenta de nuevo."
-            )
+        except Exception:
+            messages.error(request, "No pudimos confirmar la compra. Tu carrito sigue intacto.")
             return redirect("deposit")
- 
-        # --- 4. Auditoría asíncrona (opcional, no bloquea si falla) ---
+
         try:
             from .tasks import audit_deposit
             audit_deposit.delay(deposit.id)
         except Exception:
             pass
- 
-        # --- 5. Respuesta exitosa ---
-        messages.success(
-            request,
-            f"¡Recarga exitosa! Se acreditaron ${amount:,.0f} COP a tu cuenta. "
-            f"Saldo actual: ${balance_after:,.0f} COP."
+
+        self._save_cart(request, [])
+        messages.success(request, "Compra realizada con exito. Tu pago simulado fue aprobado.")
+        return redirect("checkout_success", order_id=order.id)
+
+
+class CheckoutSuccessView(View):
+    TEMPLATE = "games/checkout_success.html"
+
+    def get(self, request, order_id):
+        player = get_current_player(request)
+        if not player:
+            return redirect("login")
+
+        order = get_object_or_404(
+            PurchaseOrder.objects.prefetch_related("items"),
+            id=order_id,
+            player=player,
         )
-        return redirect("roulette")  # ajusta al nombre de tu URL de ruleta
+
+        return render(request, self.TEMPLATE, {
+            "current_player": player,
+            "order": order,
+            "items": order.items.all(),
+        })

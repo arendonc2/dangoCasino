@@ -98,3 +98,57 @@ class Deposit(models.Model):
  
     def __str__(self):
         return f"Depósito #{self.id} | {self.player} | +{self.amount}"
+
+
+class PurchaseOrder(models.Model):
+    STATUS_CHOICES = [
+        ("approved", "Pago simulado aprobado"),
+        ("confirmed", "Orden confirmada"),
+        ("failed", "Fallida"),
+    ]
+
+    player = models.ForeignKey(
+        "Player",
+        on_delete=models.CASCADE,
+        related_name="purchase_orders",
+        verbose_name="Comprador",
+    )
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Fecha de compra")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="confirmed")
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    discount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    tax = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    shipping = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Orden de compra"
+        verbose_name_plural = "Ordenes de compra"
+
+    @property
+    def order_code(self):
+        return f"ORD-{self.id:06d}"
+
+    def __str__(self):
+        return f"{self.order_code} - {self.player}"
+
+
+class PurchaseOrderItem(models.Model):
+    order = models.ForeignKey(
+        PurchaseOrder,
+        on_delete=models.CASCADE,
+        related_name="items",
+        verbose_name="Orden",
+    )
+    product_name = models.CharField(max_length=120, verbose_name="Producto")
+    quantity = models.PositiveIntegerField(default=1, verbose_name="Cantidad")
+    unit_price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Precio unitario")
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Subtotal")
+
+    class Meta:
+        verbose_name = "Item de orden"
+        verbose_name_plural = "Items de orden"
+
+    def __str__(self):
+        return f"{self.product_name} x{self.quantity}"

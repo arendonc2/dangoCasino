@@ -1,346 +1,240 @@
 {% extends "base.html" %}
 {% load humanize %}
 
-{% block title %}Recargar Saldo — Dango Casino{% endblock %}
+{% block title %}Carrito de compra | Dango Casino{% endblock %}
 
 {% block extra_css %}
 <style>
-  :root {
-    --gold:        #C9A84C;
-    --gold-light:  #F0D080;
-    --gold-dim:    #7A6020;
-    --felt:        #1A2B1A;
-    --felt-mid:    #243324;
-    --chip-red:    #C0392B;
-    --chip-blue:   #2471A3;
-    --chip-green:  #1E8449;
-    --chip-black:  #1C2833;
-    --surface:     #141E14;
-    --border:      rgba(201,168,76,0.25);
-    --text-col:    #EDE8DC;
-    --text-muted:  #9E9A8E;
-  }
-
   body {
-    background: var(--surface);
-    color: var(--text-col);
-    font-family: 'Georgia', serif;
+    background: linear-gradient(160deg, #0f172a 0%, #111827 55%, #1f2937 100%);
+    color: #e5e7eb;
   }
-
-  .deposit-wrapper {
-    max-width: 700px;
-    margin: 2.5rem auto;
-    padding: 0 1rem 4rem;
+  .page {
+    max-width: 1100px;
   }
-
-  .page-header { text-align: center; margin-bottom: 2.5rem; }
-  .page-header .icon-wrap {
-    width: 64px; height: 64px;
-    border-radius: 50%;
-    border: 2px solid var(--gold);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 1rem;
-    font-size: 28px;
-    color: var(--gold);
-    background: rgba(201,168,76,0.08);
+  .top-card,
+  .cart-card,
+  .products-card,
+  .summary-card {
+    background: rgba(17, 24, 39, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+    backdrop-filter: blur(4px);
   }
-  .page-header h1 {
-    font-size: 1.6rem; font-weight: 400;
-    letter-spacing: 0.04em;
-    color: var(--gold-light);
-    margin: 0 0 0.4rem;
+  .top-card {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
   }
-  .page-header p { font-size: 0.9rem; color: var(--text-muted); margin: 0; }
-
-  .balance-card {
-    background: var(--felt-mid);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.2rem 1.5rem;
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 1.5rem;
+  .balance {
+    font-weight: 800;
+    color: #bbf7d0;
   }
-  .balance-card .label {
-    font-size: 0.8rem; color: var(--text-muted);
-    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.25rem;
+  h1 {
+    margin: 0;
+    font-size: 1.4rem;
   }
-  .balance-card .amount { font-size: 1.7rem; color: var(--gold-light); letter-spacing: 0.02em; }
-  .balance-card .currency { font-size: 0.85rem; color: var(--text-muted); margin-left: 4px; }
-  .balance-card .chip-icon { font-size: 2rem; color: var(--gold-dim); }
-
-  .quick-section { margin-bottom: 1.5rem; }
-  .section-label {
-    font-size: 0.78rem; color: var(--text-muted);
-    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem;
+  .muted {
+    color: #cbd5e1;
+    margin: 8px 0 0;
   }
-
-  .chips-grid {
+  .product-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 12px;
   }
-  @media (max-width: 500px) { .chips-grid { grid-template-columns: repeat(3, 1fr); } }
-
-  .chip {
-    aspect-ratio: 1;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-    font-family: 'Georgia', serif;
-    user-select: none;
-    position: relative; overflow: hidden;
-  }
-  .chip::before {
-    content: '';
-    position: absolute; inset: 4px;
-    border-radius: 50%;
-    border: 2px dashed rgba(255,255,255,0.2);
-    pointer-events: none;
-  }
-  .chip:hover    { transform: translateY(-3px) scale(1.05); }
-  .chip.selected { transform: translateY(-4px) scale(1.08); box-shadow: 0 0 0 3px var(--gold); }
-
-  .chip .chip-amount { font-size: 0.7rem; font-weight: bold; color: rgba(255,255,255,0.95); line-height: 1.2; }
-  .chip .chip-unit   { font-size: 0.55rem; color: rgba(255,255,255,0.7); }
-
-  .chip-10k  { background: var(--chip-blue); }
-  .chip-50k  { background: var(--chip-red); }
-  .chip-100k { background: var(--chip-green); }
-  .chip-500k { background: #6C3483; }
-  .chip-1m   { background: var(--chip-black); border-color: var(--gold); }
-
-  .form-card {
-    background: var(--felt-mid);
-    border: 1px solid var(--border);
+  .product {
+    border: 1px solid rgba(148, 163, 184, 0.24);
     border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    padding: 12px;
+    background: rgba(30, 41, 59, 0.7);
   }
-  .form-card .section-label { margin-bottom: 1rem; }
-
-  .amount-input-wrap {
-    display: flex; align-items: center;
-    background: var(--felt);
-    border: 1px solid var(--border);
+  .product-title {
+    margin: 0 0 6px;
+    font-weight: 700;
+  }
+  .price {
+    font-size: 1.05rem;
+    color: #fef08a;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .inline-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .qty,
+  .amount-input {
+    width: 78px;
+    border: 1px solid rgba(148, 163, 184, 0.34);
     border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 0.6rem;
+    background: rgba(15, 23, 42, 0.9);
+    color: #f8fafc;
+    padding: 8px;
   }
-  .amount-input-wrap .prefix {
-    padding: 0 1rem; font-size: 1.1rem; color: var(--gold);
-    white-space: nowrap;
-    border-right: 1px solid var(--border);
-    height: 52px; display: flex; align-items: center;
-  }
-  .amount-input-wrap input[type="number"] {
-    flex: 1; background: transparent; border: none; outline: none;
-    color: var(--text-col);
-    font-size: 1.2rem; font-family: 'Georgia', serif;
-    padding: 0 1rem; height: 52px;
-    appearance: textfield;
-    -moz-appearance: textfield;
-  }
-  .amount-input-wrap input::-webkit-outer-spin-button,
-  .amount-input-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; }
-
-  .amount-hint { font-size: 0.78rem; color: var(--text-muted); }
-
-  .summary-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-    font-size: 0.9rem;
-  }
-  .summary-row:last-child { border-bottom: none; }
-  .summary-row .row-label { color: var(--text-muted); }
-  .summary-row .row-value { color: var(--text-col); }
-  .summary-row.total .row-label { color: var(--gold); font-size: 0.95rem; }
-  .summary-row.total .row-value { color: var(--gold-light); font-size: 1.1rem; }
-
-  .btn-confirm {
-    width: 100%; padding: 0.9rem;
-    background: var(--gold); color: #1A1200;
-    border: none; border-radius: 8px;
-    font-size: 1rem; font-family: 'Georgia', serif;
-    letter-spacing: 0.04em;
+  .btn {
+    border: 1px solid transparent;
+    border-radius: 9px;
+    padding: 9px 12px;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    margin-top: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
   }
-  .btn-confirm:hover   { background: var(--gold-light); }
-  .btn-confirm:active  { transform: scale(0.98); }
-  .btn-confirm:disabled { background: var(--gold-dim); color: #5A4A10; cursor: not-allowed; }
-
-  .btn-back {
-    display: block; text-align: center; margin-top: 1rem;
-    color: var(--text-muted); font-size: 0.85rem; text-decoration: none;
+  .btn-add {
+    background: #2563eb;
+    color: #fff;
   }
-  .btn-back:hover { color: var(--text-col); }
-
-  .msg { padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; }
-  .msg-success { background: rgba(30,132,73,0.2); border: 1px solid rgba(30,132,73,0.4); color: #A9DFBF; }
-  .msg-error   { background: rgba(192,57,43,0.2); border: 1px solid rgba(192,57,43,0.4); color: #F1948A; }
+  .btn-remove {
+    background: #dc2626;
+    color: #fff;
+  }
+  .btn-checkout {
+    background: #16a34a;
+    color: #fff;
+    width: 100%;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th,
+  td {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    padding: 10px 8px;
+    text-align: left;
+    vertical-align: middle;
+  }
+  .right {
+    text-align: right;
+  }
+  .totals {
+    display: grid;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .totals-row {
+    display: flex;
+    justify-content: space-between;
+    color: #d1d5db;
+  }
+  .totals-row.total {
+    font-size: 1.12rem;
+    font-weight: 800;
+    color: #fef08a;
+  }
+  .custom-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .pill {
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 999px;
+    padding: 4px 10px;
+    color: #cbd5e1;
+    font-size: 0.85rem;
+  }
+  @media (max-width: 760px) {
+    .hide-mobile {
+      display: none;
+    }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="deposit-wrapper">
-
-  {% for message in messages %}
-    <div class="msg {% if message.tags == 'error' %}msg-error{% else %}msg-success{% endif %}">
-      {{ message }}
-    </div>
-  {% endfor %}
-
-  <div class="page-header">
-    <div class="icon-wrap">&#9824;</div>
-    <h1>Recargar Fichas</h1>
-    <p>Elige el monto que deseas ingresar a tu cuenta</p>
+<div class="top-card">
+  <div>
+    <h1>Carrito de recarga</h1>
+    <p class="muted">Agrega productos, revisa tu carrito y finaliza una compra simulada con comprobante.</p>
   </div>
-
-  <!-- Saldo actual -->
-  <div class="balance-card">
-    <div>
-      <div class="label">Saldo disponible</div>
-      <div class="amount">
-        ${{ player.balance|intcomma }}<span class="currency">COP</span>
-      </div>
-    </div>
-    <div class="chip-icon">&#9824;</div>
-  </div>
-
-  <!-- Fichas de monto rápido: clases y onclick resueltos en el servidor -->
-  <div class="quick-section">
-    <div class="section-label">Selecciona un valor rápido</div>
-    <div class="chips-grid">
-      {% for amt in quick_amounts %}
-        {% if amt == 10000 %}
-          {% with chip_class="chip-10k" %}
-          <div class="chip {{ chip_class }}" data-amount="{{ amt }}" title="${{ amt|intcomma }} COP">
-            <span class="chip-amount">10K</span>
-            <span class="chip-unit">COP</span>
-          </div>
-          {% endwith %}
-        {% elif amt == 50000 %}
-          <div class="chip chip-50k" data-amount="{{ amt }}" title="${{ amt|intcomma }} COP">
-            <span class="chip-amount">50K</span>
-            <span class="chip-unit">COP</span>
-          </div>
-        {% elif amt == 100000 %}
-          <div class="chip chip-100k" data-amount="{{ amt }}" title="${{ amt|intcomma }} COP">
-            <span class="chip-amount">100K</span>
-            <span class="chip-unit">COP</span>
-          </div>
-        {% elif amt == 500000 %}
-          <div class="chip chip-500k" data-amount="{{ amt }}" title="${{ amt|intcomma }} COP">
-            <span class="chip-amount">500K</span>
-            <span class="chip-unit">COP</span>
-          </div>
-        {% else %}
-          <div class="chip chip-1m" data-amount="{{ amt }}" title="${{ amt|intcomma }} COP">
-            <span class="chip-amount">1M</span>
-            <span class="chip-unit">COP</span>
-          </div>
-        {% endif %}
-      {% endfor %}
-    </div>
-  </div>
-
-  <!-- Formulario -->
-  <form method="post" action="{% url 'deposit' %}" id="deposit-form">
-    {% csrf_token %}
-    <div class="form-card">
-      <div class="section-label">O ingresa un monto personalizado</div>
-      <div class="amount-input-wrap">
-        <span class="prefix">$</span>
-        <input
-          type="number"
-          name="amount"
-          id="amount-input"
-          min="{{ min_deposit }}"
-          max="{{ max_deposit }}"
-          step="1000"
-          placeholder="Ej: 75000"
-          autocomplete="off"
-          required
-        />
-      </div>
-      <div class="amount-hint">
-        Mínimo ${{ min_deposit|intcomma }} &mdash; Máximo ${{ max_deposit|intcomma }} COP
-      </div>
-    </div>
-
-    <!-- Resumen proyectado -->
-    <div class="form-card">
-      <div class="section-label">Resumen de tu recarga</div>
-      <div class="summary-row">
-        <span class="row-label">Saldo actual</span>
-        <span class="row-value" id="s-current">${{ player.balance|intcomma }} COP</span>
-      </div>
-      <div class="summary-row">
-        <span class="row-label">Monto a recargar</span>
-        <span class="row-value" id="s-amount">$0 COP</span>
-      </div>
-      <div class="summary-row total">
-        <span class="row-label">Nuevo saldo estimado</span>
-        <span class="row-value" id="s-total">${{ player.balance|intcomma }} COP</span>
-      </div>
-    </div>
-
-    <button type="submit" class="btn-confirm" id="btn-confirm" disabled>
-      Confirmar recarga
-    </button>
-  </form>
-
-  <a href="{% url 'play_roulette' %}" class="btn-back">&#8592; Volver a la ruleta</a>
-
+  <div class="balance">Saldo actual: ${{ player.balance|floatformat:2 }}</div>
 </div>
 
-<script>
-  /* FIX: los valores de Django se pasan como atributos data-* en el HTML,
-     no interpolados directamente en JS, para evitar el error
-     "Property assignment expected" del linter. */
-  const currentBalance = parseFloat("{{ player.balance }}") || 0;
-  const minDeposit     = parseFloat("{{ min_deposit }}")    || 1000;
-  const maxDeposit     = parseFloat("{{ max_deposit }}")    || 10000000;
+<section class="products-card">
+  <h2>Productos de recarga</h2>
+  <div class="product-grid">
+    {% for product in products %}
+      <article class="product">
+        <p class="product-title">{{ product.name }}</p>
+        <div class="price">${{ product.unit_price|intcomma }} COP</div>
+        <form method="post" action="{% url 'deposit' %}" class="inline-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add" />
+          <input type="hidden" name="sku" value="{{ product.sku }}" />
+          <input class="qty" type="number" name="quantity" min="1" value="1" />
+          <button class="btn btn-add" type="submit">Agregar</button>
+        </form>
+      </article>
+    {% endfor %}
+  </div>
 
-  const input      = document.getElementById('amount-input');
-  const sAmount    = document.getElementById('s-amount');
-  const sTotal     = document.getElementById('s-total');
-  const btnConfirm = document.getElementById('btn-confirm');
+</section>
 
-  function fmt(n) {
-    return '$' + Math.round(n).toLocaleString('es-CO') + ' COP';
-  }
+<section class="cart-card">
+  <h2>Tu carrito</h2>
 
-  function updateSummary() {
-    const val = parseFloat(input.value) || 0;
-    sAmount.textContent  = fmt(val);
-    sTotal.textContent   = fmt(currentBalance + val);
-    btnConfirm.disabled  = (val < minDeposit || val > maxDeposit);
-  }
+  {% if cart_items %}
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th class="right">Cantidad</th>
+          <th class="right hide-mobile">Precio unitario</th>
+          <th class="right">Subtotal</th>
+          <th class="right">Accion</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart_items %}
+          <tr>
+            <td>{{ item.name }}</td>
+            <td class="right">{{ item.quantity }}</td>
+            <td class="right hide-mobile">${{ item.unit_price|floatformat:2 }}</td>
+            <td class="right">${{ item.subtotal|floatformat:2 }}</td>
+            <td class="right">
+              <form method="post" action="{% url 'deposit' %}" style="display:inline-block;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="remove" />
+                <input type="hidden" name="sku" value="{{ item.sku }}" />
+                <button class="btn btn-remove" type="submit">Quitar</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">Tu carrito esta vacio. Agrega un producto para simular una compra.</p>
+  {% endif %}
+</section>
 
-  function selectChip(el, amount) {
-    document.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
-    el.classList.add('selected');
-    input.value = amount;
-    updateSummary();
-    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+<section class="summary-card">
+  <h2>Resumen de compra</h2>
+  <div class="totals">
+    <div class="totals-row"><span>Subtotal</span><span>${{ totals.subtotal|floatformat:2 }}</span></div>
+    <div class="totals-row"><span>Descuento</span><span>${{ totals.discount|floatformat:2 }}</span></div>
+    <div class="totals-row"><span>Impuestos</span><span>${{ totals.tax|floatformat:2 }}</span></div>
+    <div class="totals-row"><span>Envio</span><span>${{ totals.shipping|floatformat:2 }}</span></div>
+    <div class="totals-row total"><span>Total</span><span>${{ totals.total|floatformat:2 }}</span></div>
+  </div>
 
-  /* Asignar evento a chips desde data-amount (sin onclick en HTML) */
-  document.querySelectorAll('.chip[data-amount]').forEach(function(chip) {
-    chip.addEventListener('click', function() {
-      selectChip(chip, parseInt(chip.dataset.amount, 10));
-    });
-  });
+  <form method="post" action="{% url 'deposit' %}" style="margin-top:12px;">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="checkout" />
+    <button class="btn btn-checkout" type="submit">Finalizar compra</button>
+  </form>
 
-  input.addEventListener('input', function() {
-    document.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
-    updateSummary();
-  });
-</script>
+  <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+    <a class="btn" style="background:#334155;color:#fff;" href="{% url 'home' %}">Volver al inicio</a>
+    <a class="btn" style="background:#1d4ed8;color:#fff;" href="{% url 'play_roulette' %}">Seguir comprando</a>
+  </div>
+</section>
 {% endblock %}
