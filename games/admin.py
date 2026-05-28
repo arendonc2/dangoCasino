@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Bet, Game, Player, RouletteBet
+from .models import Bet, Game, Player, RouletteBet, Deposit
 
 
 @admin.register(Player)
@@ -28,3 +28,25 @@ class RouletteBetAdmin(admin.ModelAdmin):
 	list_display = ("id", "player", "bet_type", "bet_value", "amount", "result", "spun_number", "payout", "created_at")
 	list_filter = ("bet_type", "result", "created_at")
 	search_fields = ("player__username", "bet_value")
+
+@admin.register(Deposit)
+class DepositAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "player",
+        "amount",
+        "balance_before",
+        "balance_after",
+        "status",
+        "created_at",
+    ]
+    list_filter = ["status", "created_at"]
+    search_fields = ["player__username", "player__id"]
+    readonly_fields = [
+        "player",
+        "amount",
+        "balance_before",
+        "balance_after",
+        "created_at",
+    ]
+    ordering = ["-created_at"]

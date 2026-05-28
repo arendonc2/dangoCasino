@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 
 class Player(models.Model):
     username = models.CharField(max_length=100)
@@ -41,3 +41,60 @@ class RouletteBet(models.Model):
 
     def __str__(self):
         return f"Roulette Bet #{self.id} - {self.player}"
+    
+class Deposit(models.Model):
+    """
+    Registra cada recarga de saldo que hace un jugador.
+    Se integra al flujo existente de Player y RouletteBet.
+    """
+ 
+    STATUS_CHOICES = [
+        ("pending", "Pendiente"),
+        ("confirmed", "Confirmado"),
+        ("failed", "Fallido"),
+    ]
+ 
+    player = models.ForeignKey(
+        "Player",
+        on_delete=models.CASCADE,
+        related_name="deposits",
+        verbose_name="Jugador",
+    )
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        verbose_name="Monto recargado",
+    )
+    balance_before = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        verbose_name="Saldo antes",
+    )
+    balance_after = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        verbose_name="Saldo después",
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="confirmed",
+        verbose_name="Estado",
+    )
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        verbose_name="Fecha de recarga",
+    )
+    notes = models.TextField(
+        blank=True,
+        default="",
+        verbose_name="Notas internas",
+    )
+ 
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Depósito"
+        verbose_name_plural = "Depósitos"
+ 
+    def __str__(self):
+        return f"Depósito #{self.id} | {self.player} | +{self.amount}"

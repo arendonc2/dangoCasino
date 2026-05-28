@@ -1,6 +1,6 @@
 from django.urls import path
 from .interface.views import PlaceBetView, RegisterView, RouletteView, SystemStatusView, LoginView, LogoutView
-from .views import HomeView, GameListView, GameDetailView
+from .views import HomeView, GameListView, GameDetailView, DepositView
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('login/', LoginView.as_view(), name='login'),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('games/<int:pk>/', GameDetailView.as_view(), name='game_detail'),
     path('play-roulette/', RouletteView.as_view(), name='play_roulette'),
     path('system-status/', SystemStatusView.as_view(), name='system_status'),
+    path("deposit/", DepositView.as_view(), name="deposit"),
 ]

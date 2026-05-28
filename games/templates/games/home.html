@@ -82,7 +82,23 @@
       background:linear-gradient(180deg, rgba(34,197,94,.95), rgba(34,197,94,.75));
       color:#07120b;
     }
-
+    .navbar-deposit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 14px;
+      border: 1px solid #C9A84C;
+      border-radius: 20px;
+      color: #C9A84C;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      margin-left: 8px;
+    }
+    .navbar-deposit-btn:hover {
+      background: #C9A84C;
+      color: #1A1200;
+    }
     .welcome{margin:0 0 16px;color:rgba(255,255,255,.88);font-size:1.02rem;}
 
     .messages{margin-bottom:12px;display:grid;gap:8px;}
@@ -96,6 +112,9 @@
       <a href="{% url 'play_roulette' %}">Jugar ruleta</a>
       {% if current_player %}
         <span class="balance-pill">Hola, {{ current_player.username }} · Saldo: ${{ current_player.balance|floatformat:2 }}</span>
+        <a href="{% url 'deposit' %}" class="navbar-deposit-btn" title="Recargar fichas">
+          &#43; Recargar
+        </a>
         <form method="post" action="{% url 'logout' %}" style="margin:0;">
           {% csrf_token %}
           <button type="submit">Cerrar sesión</button>
