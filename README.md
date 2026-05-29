@@ -1,5 +1,9 @@
 # dangoCasino
 
+> **Desarrollado por:**
+> Alejandro Rendon Correa
+> Erick Santiago Ochoa Barrueto
+
 DangoCasino es una plataforma web de casino académica construida con Django, Flask, Nginx, Docker Compose, Redis y Celery. El sistema conserva la interfaz en Django, mueve la ruleta principal a Flask usando Strangler Pattern y mantiene fallbacks seguros para que la demo no se rompa durante la sustentación.
 
 ## Resumen de arquitectura
